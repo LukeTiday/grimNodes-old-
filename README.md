@@ -1,7 +1,7 @@
 # GrimNodes
-GrimNodes is a work in progress application built on litegraph.js
+GrimNodes is a node based VFX application built on litegraph.js
 
-The goal is to create a lightweight VFX application that is easy to integrate into standing VFX pipelines while favoring a Procedural/Node based approach to tool building.
+it is a lightweight VFX application that favors a Procedural/Node based approach to tool building.
 
 
 ## Features
@@ -29,9 +29,6 @@ Although it is easy to create new node types, LiteGraph comes with some default 
 
 downloading the repository
 open the MAIN.html in your favorite browser
-
-## Documentation ##
-Documentation will be provided once this project actually has some legs. check Docs folder for updates
 
 
 ## How to code a new Node type
