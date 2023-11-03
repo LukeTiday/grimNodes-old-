@@ -1,0 +1,17 @@
+.litegraph .bullet_icon {
+	margin-left: 10px;
+	border-radius: 10px;
+	width: 12px;
+	height: 12px;
+	background-color: #666;
+	display: inline-block;
+	margin-top: 2px;
+	margin-right: 4px;
+    transition: background-color 0.1s ease 0s;
+    -moz-transition: background-color 0.1s ease 0s;
+}
+
+.litegraph .bullet_icon:hover {
+	background-color: #698;
+	cursor: pointer;
+} 

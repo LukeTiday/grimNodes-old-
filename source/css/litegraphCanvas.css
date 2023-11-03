@@ -1,0 +1,14 @@
+/* this CSS contains only the basic CSS needed to run the app and use it */
+
+.lgraphcanvas {
+    /*cursor: crosshair;*/
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+	outline: none;
+    font-family: Tahoma, sans-serif;
+}
+
+.lgraphcanvas * {
+    box-sizing: border-box;
+}
