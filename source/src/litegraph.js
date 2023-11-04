@@ -1,6 +1,6 @@
 
 (function(global) {
-    // *************************************************************
+        // *************************************************************
     //   LiteGraph CLASS                                     *******
     // *************************************************************
 
@@ -10,12 +10,13 @@
      * @class LiteGraph
      * @constructor
      */
-
+    
+    //declare the node object
     var LiteGraph = (global.LiteGraph = {
         VERSION: 0.4,
-
+    
         CANVAS_GRID_SIZE: 10,
-
+    
         NODE_TITLE_HEIGHT: 30,
         NODE_TITLE_TEXT_Y: 20,
         NODE_SLOT_HEIGHT: 20,
@@ -36,20 +37,20 @@
         NODE_BOX_OUTLINE_COLOR: "#FFF",
         DEFAULT_SHADOW_COLOR: "rgba(0,0,0,0.5)",
         DEFAULT_GROUP_FONT: 24,
-
+    
         WIDGET_BGCOLOR: "#222",
         WIDGET_OUTLINE_COLOR: "#666",
         WIDGET_TEXT_COLOR: "#DDD",
         WIDGET_SECONDARY_TEXT_COLOR: "#999",
-
+    
         LINK_COLOR: "#9A9",
         EVENT_LINK_COLOR: "#A86",
         CONNECTING_LINK_COLOR: "#AFA",
-
+    
         MAX_NUMBER_OF_NODES: 1000, //avoid infinite loops
         DEFAULT_POSITION: [100, 100], //default node position
         VALID_SHAPES: ["default", "box", "round", "card"], //,"circle"
-
+    
         //shapes are used for nodes but also for slots
         BOX_SHAPE: 1,
         ROUND_SHAPE: 2,
@@ -57,41 +58,41 @@
         CARD_SHAPE: 4,
         ARROW_SHAPE: 5,
         GRID_SHAPE: 6, // intended for slot arrays
-
+    
         //enums
         INPUT: 1,
         OUTPUT: 2,
-
+    
         EVENT: -1, //for outputs
         ACTION: -1, //for inputs
-
+    
         NODE_MODES: ["Always", "On Event", "Never", "On Trigger"], // helper, will add "On Request" and more in the future
         NODE_MODES_COLORS:["#666","#422","#333","#224","#626"], // use with node_box_coloured_by_mode
         ALWAYS: 0,
         ON_EVENT: 1,
         NEVER: 2,
         ON_TRIGGER: 3,
-
+    
         UP: 1,
         DOWN: 2,
         LEFT: 3,
         RIGHT: 4,
         CENTER: 5,
-
+    
         LINK_RENDER_MODES: ["Straight", "Linear", "Spline"], // helper
         STRAIGHT_LINK: 0,
         LINEAR_LINK: 1,
         SPLINE_LINK: 2,
-
+    
         NORMAL_TITLE: 0,
         NO_TITLE: 1,
         TRANSPARENT_TITLE: 2,
         AUTOHIDE_TITLE: 3,
         VERTICAL_LAYOUT: "vertical", // arrange nodes vertically
-
+    
         proxy: null, //used to redirect calls
         node_images_path: "",
-
+    
         debug: false,
         catch_exceptions: true,
         throw_errors: true,
@@ -99,12 +100,12 @@
         registered_node_types: {}, //nodetypes by string
         node_types_by_file_extension: {}, //used for dropping files in the canvas
         Nodes: {}, //node types by classname
-		Globals: {}, //used to store vars between graphs
-
+        Globals: {}, //used to store vars between graphs
+    
         searchbox_extras: {}, //used to add extra features to the search box
         auto_sort_node_types: false, // [true!] If set to true, will automatically sort node types / categories in the context menus
-		
-		node_box_coloured_when_on: false, // [true!] this make the nodes box (top left circle) coloured when triggered (execute/action), visual feedback
+        
+        node_box_coloured_when_on: false, // [true!] this make the nodes box (top left circle) coloured when triggered (execute/action), visual feedback
         node_box_coloured_by_mode: false, // [true!] nodebox based on node mode, visual feedback
         
         dialog_close_on_mouse_leave: true, // [false on mobile] better true if not touch device, TODO add an helper/listener to close if false
@@ -119,66 +120,66 @@
         
         auto_load_slot_types: false, // [if want false, use true, run, get vars values to be statically set, than disable] nodes types and nodeclass association with node types need to be calculated, if dont want this, calculate once and set registered_slot_[in/out]_types and slot_types_[in/out]
         
-		// set these values if not using auto_load_slot_types
+        // set these values if not using auto_load_slot_types
         registered_slot_in_types: {}, // slot types for nodeclass
         registered_slot_out_types: {}, // slot types for nodeclass
         slot_types_in: [], // slot types IN
         slot_types_out: [], // slot types OUT
         slot_types_default_in: [], // specify for each IN slot type a(/many) default node(s), use single string, array, or object (with node, title, parameters, ..) like for search
-		slot_types_default_out: [], // specify for each OUT slot type a(/many) default node(s), use single string, array, or object (with node, title, parameters, ..) like for search
-		
-		alt_drag_do_clone_nodes: false, // [true!] very handy, ALT click to clone and drag the new node
-
-		do_add_triggers_slots: false, // [true!] will create and connect event slots when using action/events connections, !WILL CHANGE node mode when using onTrigger (enable mode colors), onExecuted does not need this
-		
-		allow_multi_output_for_events: true, // [false!] being events, it is strongly reccomended to use them sequentially, one by one
-
-		middle_click_slot_add_default_node: false, //[true!] allows to create and connect a ndoe clicking with the third button (wheel)
-		
-		release_link_on_empty_shows_menu: false, //[true!] dragging a link to empty space will open a menu, add from list, search or defaults
-		
+        slot_types_default_out: [], // specify for each OUT slot type a(/many) default node(s), use single string, array, or object (with node, title, parameters, ..) like for search
+        
+        alt_drag_do_clone_nodes: false, // [true!] very handy, ALT click to clone and drag the new node
+    
+        do_add_triggers_slots: false, // [true!] will create and connect event slots when using action/events connections, !WILL CHANGE node mode when using onTrigger (enable mode colors), onExecuted does not need this
+        
+        allow_multi_output_for_events: true, // [false!] being events, it is strongly reccomended to use them sequentially, one by one
+    
+        middle_click_slot_add_default_node: false, //[true!] allows to create and connect a ndoe clicking with the third button (wheel)
+        
+        release_link_on_empty_shows_menu: false, //[true!] dragging a link to empty space will open a menu, add from list, search or defaults
+        
         pointerevents_method: "mouse", // "mouse"|"pointer" use mouse for retrocompatibility issues? (none found @ now)
         // TODO implement pointercancel, gotpointercapture, lostpointercapture, (pointerover, pointerout if necessary)
-
+    
         ctrl_shift_v_paste_connect_unselected_outputs: false, //[true!] allows ctrl + shift + v to paste nodes with the outputs of the unselected nodes connected with the inputs of the newly pasted nodes
-
+    
         // if true, all newly created nodes/links will use string UUIDs for their id fields instead of integers.
         // use this if you must have node IDs that are unique across all graphs and subgraphs.
         use_uuids: false,
-
+    
         /**
          * Register a node class so it can be listed when the user wants to create a new one
          * @method registerNodeType
          * @param {String} type name of the node and path
          * @param {Class} base_class class containing the structure of a node
          */
-
+    
         registerNodeType: function(type, base_class) {
             if (!base_class.prototype) {
                 throw "Cannot register a simple object, it must be a class with a prototype";
             }
             base_class.type = type;
-
+    
             if (LiteGraph.debug) {
                 console.log("Node registered: " + type);
             }
-
+    
             const classname = base_class.name;
-
+    
             const pos = type.lastIndexOf("/");
             base_class.category = type.substring(0, pos);
-
+    
             if (!base_class.title) {
                 base_class.title = classname;
             }
-
+    
             //extend class
             for (var i in LGraphNode.prototype) {
                 if (!base_class.prototype[i]) {
                     base_class.prototype[i] = LGraphNode.prototype[i];
                 }
             }
-
+    
             const prev = this.registered_node_types[type];
             if(prev) {
                 console.log("replacing node type: " + type);
@@ -213,7 +214,7 @@
                     configurable: true
                 });
                 
-
+    
                 //used to know which nodes to create when dragging files to the canvas
                 if (base_class.supported_extensions) {
                     for (let i in base_class.supported_extensions) {
@@ -224,7 +225,7 @@
                     }
                 }
             }
-
+    
             this.registered_node_types[type] = base_class;
             if (base_class.constructor.name) {
                 this.Nodes[classname] = base_class;
@@ -235,7 +236,7 @@
             if (prev && LiteGraph.onNodeTypeReplaced) {
                 LiteGraph.onNodeTypeReplaced(type, base_class, prev);
             }
-
+    
             //warnings
             if (base_class.prototype.onPropertyChange) {
                 console.warn(
@@ -250,7 +251,7 @@
                 new base_class(base_class.title || "tmpnode");
             }
         },
-
+    
         /**
          * removes a node type from the system
          * @method unregisterNodeType
@@ -269,7 +270,7 @@
                 delete this.Nodes[base_class.constructor.name];
             }
         },
-
+    
         /**
         * Save a slot type and his node
         * @method registerSlotType
@@ -283,9 +284,9 @@
                 this.registered_node_types[type] !== "anonymous"
                     ? this.registered_node_types[type]
                     : type;
-
+    
             const class_type = base_class.constructor.type;
-
+    
             let allTypes = [];
             if (typeof slot_type === "string") {
                 allTypes = slot_type.split(",");
@@ -294,7 +295,7 @@
             } else {
                 allTypes = ["*"];
             }
-
+    
             for (let i = 0; i < allTypes.length; ++i) {
                 let slotType = allTypes[i];
                 if (slotType === "") {
@@ -309,7 +310,7 @@
                 if (!this[registerTo][slotType].nodes.includes(class_type)) {
                     this[registerTo][slotType].nodes.push(class_type);
                 }
-
+    
                 // check if is a new type
                 if (!out) {
                     if (!this.slot_types_in.includes(slotType.toLowerCase())) {
@@ -375,7 +376,7 @@
             };
             this.registerNodeType(name, classobj);
         },
-
+    
         /**
          * Removes all previously registered node's types
          */
@@ -385,7 +386,7 @@
             this.Nodes = {};
             this.searchbox_extras = {};
         },
-
+    
         /**
          * Adds this method to all nodetypes, existing and to be created
          * (You can add it to LGraphNode.prototype but then existing node types wont have it)
@@ -402,7 +403,7 @@
                 type.prototype[name] = func;
             }
         },
-
+    
         /**
          * Create a node of a given type with a name. The node is not attached to any graph yet.
          * @method createNode
@@ -410,7 +411,7 @@
          * @param {String} name a name to distinguish from other nodes
          * @param {Object} options to set options
          */
-
+    
         createNode: function(type, title, options) {
             var base_class = this.registered_node_types[type];
             if (!base_class) {
@@ -421,13 +422,13 @@
                 }
                 return null;
             }
-
+    
             var prototype = base_class.prototype || base_class;
-
+    
             title = title || base_class.title || type;
-
+    
             var node = null;
-
+    
             if (LiteGraph.catch_exceptions) {
                 try {
                     node = new base_class(title);
@@ -438,9 +439,9 @@
             } else {
                 node = new base_class(title);
             }
-
+    
             node.type = type;
-
+    
             if (!node.title && title) {
                 node.title = title;
             }
@@ -455,7 +456,7 @@
             }
             if (!node.size) {
                 node.size = node.computeSize();
-				//call onresize?
+                //call onresize?
             }
             if (!node.pos) {
                 node.pos = LiteGraph.DEFAULT_POSITION.concat();
@@ -463,22 +464,22 @@
             if (!node.mode) {
                 node.mode = LiteGraph.ALWAYS;
             }
-
+    
             //extra options
             if (options) {
                 for (var i in options) {
                     node[i] = options[i];
                 }
             }
-
-			// callback
+    
+            // callback
             if ( node.onNodeCreated ) {
                 node.onNodeCreated();
             }
             
             return node;
         },
-
+    
         /**
          * Returns a registered node type with a given name
          * @method getNodeType
@@ -488,14 +489,14 @@
         getNodeType: function(type) {
             return this.registered_node_types[type];
         },
-
+    
         /**
          * Returns a list of node types matching one category
          * @method getNodeType
          * @param {String} category category name
          * @return {Array} array with all the node classes
          */
-
+    
         getNodeTypesInCategory: function(category, filter) {
             var r = [];
             for (var i in this.registered_node_types) {
@@ -503,7 +504,7 @@
                 if (type.filter != filter) {
                     continue;
                 }
-
+    
                 if (category == "") {
                     if (type.category == null) {
                         r.push(type);
@@ -512,14 +513,14 @@
                     r.push(type);
                 }
             }
-
+    
             if (this.auto_sort_node_types) {
                 r.sort(function(a,b){return a.title.localeCompare(b.title)});
             }
-
+    
             return r;
         },
-
+    
         /**
          * Returns a list with all the node type categories
          * @method getNodeTypesCategories
@@ -529,11 +530,11 @@
         getNodeTypesCategories: function( filter ) {
             var categories = { "": 1 };
             for (var i in this.registered_node_types) {
-				var type = this.registered_node_types[i];
+                var type = this.registered_node_types[i];
                 if ( type.category && !type.skip_list )
                 {
-					if(type.filter != filter)
-						continue;
+                    if(type.filter != filter)
+                        continue;
                     categories[type.category] = 1;
                 }
             }
@@ -543,7 +544,7 @@
             }
             return this.auto_sort_node_types ? result.sort() : result;
         },
-
+    
         //debug purposes: reloads all the js scripts that matches a wildcard
         reloadNodes: function(folder_wildcard) {
             var tmp = document.getElementsByTagName("script");
@@ -552,10 +553,10 @@
             for (var i=0; i < tmp.length; i++) {
                 script_files.push(tmp[i]);
             }
-
+    
             var docHeadObj = document.getElementsByTagName("head")[0];
             folder_wildcard = document.location.href + folder_wildcard;
-
+    
             for (var i=0; i < script_files.length; i++) {
                 var src = script_files[i].src;
                 if (
@@ -564,7 +565,7 @@
                 ) {
                     continue;
                 }
-
+    
                 try {
                     if (LiteGraph.debug) {
                         console.log("Reloading: " + src);
@@ -583,12 +584,12 @@
                     }
                 }
             }
-
+    
             if (LiteGraph.debug) {
                 console.log("Nodes reloaded");
             }
         },
-
+    
         //separated just to improve if it doesn't work
         cloneObject: function(obj, target) {
             if (obj == null) {
@@ -598,20 +599,20 @@
             if (!target) {
                 return r;
             }
-
+    
             for (var i in r) {
                 target[i] = r[i];
             }
             return target;
         },
-
+    
         /*
          * https://gist.github.com/jed/982883?permalink_comment_id=852670#gistcomment-852670
          */
         uuidv4: function() {
             return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,a=>(a^Math.random()*16>>a/4).toString(16));
         },
-
+    
         /**
          * Returns if the types of two slots are compatible (taking into account wildcards, etc)
          * @method isValidConnection
@@ -620,8 +621,8 @@
          * @return {Boolean} true if they can be connected
          */
         isValidConnection: function(type_a, type_b) {
-			if (type_a=="" || type_a==="*") type_a = 0;
-			if (type_b=="" || type_b==="*") type_b = 0;
+            if (type_a=="" || type_a==="*") type_a = 0;
+            if (type_b=="" || type_b==="*") type_b = 0;
             if (
                 !type_a //generic output
                 || !type_b // generic input
@@ -630,33 +631,33 @@
             ) {
                 return true;
             }
-
+    
             // Enforce string type to handle toLowerCase call (-1 number not ok)
             type_a = String(type_a);
             type_b = String(type_b);
             type_a = type_a.toLowerCase();
             type_b = type_b.toLowerCase();
-
+    
             // For nodes supporting multiple connection types
             if (type_a.indexOf(",") == -1 && type_b.indexOf(",") == -1) {
                 return type_a == type_b;
             }
-
+    
             // Check all permutations to see if one is valid
             var supported_types_a = type_a.split(",");
             var supported_types_b = type_b.split(",");
             for (var i = 0; i < supported_types_a.length; ++i) {
                 for (var j = 0; j < supported_types_b.length; ++j) {
                     if(this.isValidConnection(supported_types_a[i],supported_types_b[j])){
-					//if (supported_types_a[i] == supported_types_b[j]) {
+                    //if (supported_types_a[i] == supported_types_b[j]) {
                         return true;
                     }
                 }
             }
-
+    
             return false;
         },
-
+    
         /**
          * Register a string in the search box so when the user types it it will recommend this node
          * @method registerSearchboxExtra
@@ -672,7 +673,7 @@
                 data: data
             };
         },
-
+    
         /**
          * Wrapper to load files (from url using fetch or from file using FileReader)
          * @method fetchFile
@@ -682,63 +683,65 @@
          * @param {Function} on_error in case of an error
          * @return {FileReader|Promise} returns the object used to 
          */
-		fetchFile: function( url, type, on_complete, on_error ) {
-			var that = this;
-			if(!url)
-				return null;
-
-			type = type || "text";
-			if( url.constructor === String )
-			{
-				if (url.substr(0, 4) == "http" && LiteGraph.proxy) {
-					url = LiteGraph.proxy + url.substr(url.indexOf(":") + 3);
-				}
-				return fetch(url)
-				.then(function(response) {
-					if(!response.ok)
-						 throw new Error("File not found"); //it will be catch below
-					if(type == "arraybuffer")
-						return response.arrayBuffer();
-					else if(type == "text" || type == "string")
-						return response.text();
-					else if(type == "json")
-						return response.json();
-					else if(type == "blob")
-						return response.blob();
-				})
-				.then(function(data) {
-					if(on_complete)
-						on_complete(data);
-				})
-				.catch(function(error) {
-					console.error("error fetching file:",url);
-					if(on_error)
-						on_error(error);
-				});
-			}
-			else if( url.constructor === File || url.constructor === Blob)
-			{
-				var reader = new FileReader();
-				reader.onload = function(e)
-				{
-					var v = e.target.result;
-					if( type == "json" )
-						v = JSON.parse(v);
-					if(on_complete)
-						on_complete(v);
-				}
-				if(type == "arraybuffer")
-					return reader.readAsArrayBuffer(url);
-				else if(type == "text" || type == "json")
-					return reader.readAsText(url);
-				else if(type == "blob")
-					return reader.readAsBinaryString(url);
-			}
-			return null;
-		}
+        fetchFile: function( url, type, on_complete, on_error ) {
+            var that = this;
+            if(!url)
+                return null;
+    
+            type = type || "text";
+            if( url.constructor === String )
+            {
+                if (url.substr(0, 4) == "http" && LiteGraph.proxy) {
+                    url = LiteGraph.proxy + url.substr(url.indexOf(":") + 3);
+                }
+                return fetch(url)
+                .then(function(response) {
+                    if(!response.ok)
+                         throw new Error("File not found"); //it will be catch below
+                    if(type == "arraybuffer")
+                        return response.arrayBuffer();
+                    else if(type == "text" || type == "string")
+                        return response.text();
+                    else if(type == "json")
+                        return response.json();
+                    else if(type == "blob")
+                        return response.blob();
+                })
+                .then(function(data) {
+                    if(on_complete)
+                        on_complete(data);
+                })
+                .catch(function(error) {
+                    console.error("error fetching file:",url);
+                    if(on_error)
+                        on_error(error);
+                });
+            }
+            else if( url.constructor === File || url.constructor === Blob)
+            {
+                var reader = new FileReader();
+                reader.onload = function(e)
+                {
+                    var v = e.target.result;
+                    if( type == "json" )
+                        v = JSON.parse(v);
+                    if(on_complete)
+                        on_complete(v);
+                }
+                if(type == "arraybuffer")
+                    return reader.readAsArrayBuffer(url);
+                else if(type == "text" || type == "json")
+                    return reader.readAsText(url);
+                else if(type == "blob")
+                    return reader.readAsBinaryString(url);
+            }
+            return null;
+        }
     });
 
-    //timer that works everywhere
+
+    //LiteGraph.getTime method abstracts away the differences in time-keeping functions across environments, 
+    //giving you a reliable and precise way to get the current time
     if (typeof performance != "undefined") {
         LiteGraph.getTime = performance.now.bind(performance);
     } else if (typeof Date != "undefined" && Date.now) {
@@ -1377,6 +1380,13 @@
         }
     };
 
+    /**
+    * Sends a specified action to all canvases associated with the graph.
+    * It will call the method named after the action parameter on each canvas if it exists.
+    * @method sendActionToCanvas
+    * @param {String} action The name of the method to call on each canvas.
+    * @param {Array} params An array of parameters to pass to the action method.
+    */
     LGraph.prototype.sendActionToCanvas = function(action, params) {
         if (!this.list_of_graphcanvas) {
             return;
@@ -1474,7 +1484,6 @@
      * @method remove
      * @param {LGraphNode} node the instance of the node
      */
-
     LGraph.prototype.remove = function(node) {
         if (node.constructor === LiteGraph.LGraphGroup) {
             var index = this._groups.indexOf(node);
@@ -1562,12 +1571,7 @@
         this.updateExecutionOrder();
     };
 
-    /**
-     * Returns a node by its id.
-     * @method getNodeById
-     * @param {Number} id
-     */
-
+    // Returns a node by its id.
     LGraph.prototype.getNodeById = function(id) {
         if (id == null) {
             return null;
@@ -1683,11 +1687,9 @@
         return null;
     };
 
-    /**
-     * Checks that the node type matches the node type registered, used when replacing a nodetype by a newer version during execution
-     * this replaces the ones using the old version with the new version
-     * @method checkNodeTypes
-     */
+    // Checks that the node type matches the node type registered, 
+    // used when replacing a nodetype by a newer version during execution
+    // this replaces the ones using the old version with the new version
     LGraph.prototype.checkNodeTypes = function() {
         var changes = false;
         for (var i = 0; i < this._nodes.length; i++) {
@@ -1715,6 +1717,13 @@
 
     // ********** GLOBALS *****************
 
+    /**
+    * Handles the given action by finding the first input node with a matching name and triggering its action.
+    * @method onAction
+    * @param {String} action The name of the action to match with an input node's 'name' property.
+    * @param {any} param The parameter to pass to the node's action method.
+    * @param {Object} options Additional options to pass to the node's action method.
+    */
     LGraph.prototype.onAction = function(action, param, options) {
         this._input_nodes = this.findNodesByClass(
             LiteGraph.GraphInput,
@@ -1731,19 +1740,21 @@
         }
     };
 
+    /**
+    * Triggers an action on the graph if a trigger callback is defined.
+    * @method trigger
+    * @param {String} action The action to be triggered.
+    * @param {any} param The parameter to pass along with the action.
+    */
     LGraph.prototype.trigger = function(action, param) {
         if (this.onTrigger) {
             this.onTrigger(action, param);
         }
     };
 
-    /**
-     * Tell this graph it has a global graph input of this type
-     * @method addGlobalInput
-     * @param {String} name
-     * @param {String} type
-     * @param {*} value [optional]
-     */
+    ////////////// INPUT HANDLING ///////////////
+    
+    // Tell this graph it has a global graph input of this type
     LGraph.prototype.addInput = function(name, type, value) {
         var input = this.inputs[name];
         if (input) {
@@ -1765,12 +1776,7 @@
         }
     };
 
-    /**
-     * Assign a data to the global graph input
-     * @method setGlobalInputData
-     * @param {String} name
-     * @param {*} data
-     */
+    // Assign a data to the global graph input
     LGraph.prototype.setInputData = function(name, data) {
         var input = this.inputs[name];
         if (!input) {
@@ -1779,12 +1785,7 @@
         input.value = data;
     };
 
-    /**
-     * Returns the current value of a global graph input
-     * @method getInputData
-     * @param {String} name
-     * @return {*} the data
-     */
+    // Returns the current value of a global graph input
     LGraph.prototype.getInputData = function(name) {
         var input = this.inputs[name];
         if (!input) {
@@ -1793,12 +1794,7 @@
         return input.value;
     };
 
-    /**
-     * Changes the name of a global graph input
-     * @method renameInput
-     * @param {String} old_name
-     * @param {String} new_name
-     */
+    // Changes the name of a global graph input
     LGraph.prototype.renameInput = function(old_name, name) {
         if (name == old_name) {
             return;
@@ -1826,12 +1822,7 @@
         }
     };
 
-    /**
-     * Changes the type of a global graph input
-     * @method changeInputType
-     * @param {String} name
-     * @param {String} type
-     */
+    // Changes the type of a global graph input
     LGraph.prototype.changeInputType = function(name, type) {
         if (!this.inputs[name]) {
             return false;
@@ -1852,12 +1843,7 @@
         }
     };
 
-    /**
-     * Removes a global graph input
-     * @method removeInput
-     * @param {String} name
-     * @param {String} type
-     */
+    // Removes a global graph input
     LGraph.prototype.removeInput = function(name) {
         if (!this.inputs[name]) {
             return false;
@@ -1876,13 +1862,9 @@
         return true;
     };
 
-    /**
-     * Creates a global graph output
-     * @method addOutput
-     * @param {String} name
-     * @param {String} type
-     * @param {*} value
-     */
+    ////////////// OUTPUT HANDLING ///////////////
+
+    // Creates a global graph output
     LGraph.prototype.addOutput = function(name, type, value) {
         this.outputs[name] = { name: name, type: type, value: value };
         this._version++;
@@ -1896,12 +1878,7 @@
         }
     };
 
-    /**
-     * Assign a data to the global output
-     * @method setOutputData
-     * @param {String} name
-     * @param {String} value
-     */
+    // Assign a data to the global output
     LGraph.prototype.setOutputData = function(name, value) {
         var output = this.outputs[name];
         if (!output) {
@@ -1910,12 +1887,7 @@
         output.value = value;
     };
 
-    /**
-     * Returns the current value of a global graph output
-     * @method getOutputData
-     * @param {String} name
-     * @return {*} the data
-     */
+    // Returns the current value of a global graph output
     LGraph.prototype.getOutputData = function(name) {
         var output = this.outputs[name];
         if (!output) {
@@ -1924,12 +1896,7 @@
         return output.value;
     };
 
-    /**
-     * Renames a global graph output
-     * @method renameOutput
-     * @param {String} old_name
-     * @param {String} new_name
-     */
+    // Renames a global graph output
     LGraph.prototype.renameOutput = function(old_name, name) {
         if (!this.outputs[old_name]) {
             return false;
@@ -1953,12 +1920,7 @@
         }
     };
 
-    /**
-     * Changes the type of a global graph output
-     * @method changeOutputType
-     * @param {String} name
-     * @param {String} type
-     */
+    //Changes the type of a global graph output
     LGraph.prototype.changeOutputType = function(name, type) {
         if (!this.outputs[name]) {
             return false;
@@ -1979,11 +1941,7 @@
         }
     };
 
-    /**
-     * Removes a global graph output
-     * @method removeOutput
-     * @param {String} name
-     */
+    // Removes a global graph output
     LGraph.prototype.removeOutput = function(name) {
         if (!this.outputs[name]) {
             return false;
@@ -2000,7 +1958,9 @@
         }
         return true;
     };
+    ////////////// Triggers ///////////////
 
+    //Triggers an event on all nodes with a specific title
     LGraph.prototype.triggerInput = function(name, value) {
         var nodes = this.findNodesByTitle(name);
         for (var i = 0; i < nodes.length; ++i) {
@@ -2008,6 +1968,7 @@
         }
     };
 
+    //Assigns a callback function to all nodes with a given title
     LGraph.prototype.setCallback = function(name, func) {
         var nodes = this.findNodesByTitle(name);
         for (var i = 0; i < nodes.length; ++i) {
@@ -2031,6 +1992,7 @@
         this.sendActionToCanvas("onAfterChange", this);
     };
 
+    //Handles updates to the graph when a connection change occurs
     LGraph.prototype.connectionChange = function(node, link_info) {
         this.updateExecutionOrder();
         if (this.onConnectionChange) {
@@ -2040,11 +2002,7 @@
         this.sendActionToCanvas("onConnectionChange");
     };
 
-    /**
-     * returns if the graph is in live mode
-     * @method isLive
-     */
-
+    // returns if the graph is in live mode
     LGraph.prototype.isLive = function() {
         if (!this.list_of_graphcanvas) {
             return false;
@@ -2059,10 +2017,7 @@
         return false;
     };
 
-    /**
-     * clears the triggered slot animation in all links (stop visual animation)
-     * @method clearTriggeredSlots
-     */
+    // clears the triggered slot animation in all links (stop visual animation)
     LGraph.prototype.clearTriggeredSlots = function() {
         for (var i in this.links) {
             var link_info = this.links[i];
@@ -2075,7 +2030,7 @@
         }
     };
 
-    /* Called when something visually changed (not the graph!) */
+    // Called when something visually changed (not the graph!)
     LGraph.prototype.change = function() {
         if (LiteGraph.debug) {
             console.log("Graph changed");
@@ -2086,29 +2041,14 @@
         }
     };
 
+    // Dirty means needs to be regenerated
     LGraph.prototype.setDirtyCanvas = function(fg, bg) {
         this.sendActionToCanvas("setDirty", [fg, bg]);
     };
 
+    ///////////////save and recover app state /////////////////////
     /**
-     * Destroys a link
-     * @method removeLink
-     * @param {Number} link_id
-     */
-    LGraph.prototype.removeLink = function(link_id) {
-        var link = this.links[link_id];
-        if (!link) {
-            return;
-        }
-        var node = this.getNodeById(link.target_id);
-        if (node) {
-            node.disconnectInput(link.target_slot);
-        }
-    };
-
-    //save and recover app state ***************************************
-    /**
-     * Creates a Object containing all the info about this graph, it can be serialized
+     * Creates a JSON containing all the info about this graph, it can be serialized
      * @method serialize
      * @return {Object} value of the node
      */
@@ -2261,6 +2201,12 @@
         return error;
     };
 
+    /**
+    * Load graph data from a JSON
+    * @method load
+    * @param {String|File|Blob} url - The URL to fetch or the File/Blob object to read the graph data from.
+    * @param {Function} [callback] - An optional callback to execute after the graph has been configured.
+    */
     LGraph.prototype.load = function(url, callback) {
         var that = this;
 
@@ -2302,6 +2248,23 @@
         //TODO
     };
 
+    ///////////////////////////// Node Link Management /////////////////////////////////
+    /**
+     * Destroys a link
+     * @method removeLink
+     * @param {Number} link_id
+     */
+    LGraph.prototype.removeLink = function(link_id) {
+        var link = this.links[link_id];
+        if (!link) {
+            return;
+        }
+        var node = this.getNodeById(link.target_id);
+        if (node) {
+            node.disconnectInput(link.target_slot);
+        }
+    };
+
     //this is the class in charge of storing link information
     function LLink(id, type, origin_id, origin_slot, target_id, target_slot) {
         this.id = id;
@@ -2315,6 +2278,12 @@
         this._pos = new Float32Array(2); //center
     }
 
+    /**
+    * Configures a link by setting its properties.
+    * 
+    * @method configure
+    * @param {Array|Object} o - The configuration data for the link, either an array with ordered values or an object with named properties.
+    */
     LLink.prototype.configure = function(o) {
         if (o.constructor === Array) {
             this.id = o[0];
@@ -2333,6 +2302,12 @@
         }
     };
 
+    /**
+    * Puts the link's properties into an array.
+    * 
+    * @method serialize
+    * @returns {Array} An array containing the serialized link properties.
+    */
     LLink.prototype.serialize = function() {
         return [
             this.id,
@@ -2346,73 +2321,24 @@
 
     LiteGraph.LLink = LLink;
 
-    // *************************************************************
-    //   Node CLASS                                          *******
-    // *************************************************************
-
-    /*
-	title: string
-	pos: [x,y]
-	size: [x,y]
-
-	input|output: every connection
-		+  { name:string, type:string, pos: [x,y]=Optional, direction: "input"|"output", links: Array });
-
-	general properties:
-		+ clip_area: if you render outside the node, it will be clipped
-		+ unsafe_execution: not allowed for safe execution
-		+ skip_repeated_outputs: when adding new outputs, it wont show if there is one already connected
-		+ resizable: if set to false it wont be resizable with the mouse
-		+ horizontal: slots are distributed horizontally
-		+ widgets_start_y: widgets start at y distance from the top of the node
-	
-	flags object:
-		+ collapsed: if it is collapsed
-
-	supported callbacks:
-		+ onAdded: when added to graph (warning: this is called BEFORE the node is configured when loading)
-		+ onRemoved: when removed from graph
-		+ onStart:	when the graph starts playing
-		+ onStop:	when the graph stops playing
-		+ onDrawForeground: render the inside widgets inside the node
-		+ onDrawBackground: render the background area inside the node (only in edit mode)
-		+ onMouseDown
-		+ onMouseMove
-		+ onMouseUp
-		+ onMouseEnter
-		+ onMouseLeave
-		+ onExecute: execute the node
-		+ onPropertyChanged: when a property is changed in the panel (return true to skip default behaviour)
-		+ onGetInputs: returns an array of possible inputs
-		+ onGetOutputs: returns an array of possible outputs
-		+ onBounding: in case this node has a bigger bounding than the node itself (the callback receives the bounding as [x,y,w,h])
-		+ onDblClick: double clicked in the node
-		+ onInputDblClick: input slot double clicked (can be used to automatically create a node connected)
-		+ onOutputDblClick: output slot double clicked (can be used to automatically create a node connected)
-		+ onConfigure: called after the node has been configured
-		+ onSerialize: to add extra info when serializing (the callback receives the object that should be filled with the data)
-		+ onSelected
-		+ onDeselected
-		+ onDropItem : DOM item dropped over the node
-		+ onDropFile : file dropped over the node
-		+ onConnectInput : if returns false the incoming connection will be canceled
-		+ onConnectionsChange : a connection changed (new one or removed) (LiteGraph.INPUT or LiteGraph.OUTPUT, slot, true if connected, link_info, input_info )
-		+ onAction: action slot triggered
-		+ getExtraMenuOptions: to add option to context menu
-*/
-
+    ///////////////// begin node management //////////////////////////
     /**
      * Base Class for all the node type classes
      * @class LGraphNode
      * @param {String} name a name for the node
      */
-
     function LGraphNode(title) {
         this._ctor(title);
     }
 
     global.LGraphNode = LiteGraph.LGraphNode = LGraphNode;
 
+    /**
+    * Constructs a new graph node with a given title and initializes properties.
+    * Sets default position, size, ids, and connection arrays.
+    * Defines a getter and setter for the node's position.
+    * @param {String} title - The display title of the node.
+    */
     LGraphNode.prototype._ctor = function(title) {
         this.title = title || "Unnamed";
         this.size = [LiteGraph.NODE_WIDTH, 60];
@@ -2548,10 +2474,9 @@
     };
 
     /**
-     * serialize the content
+     * Put node properties into an array
      * @method serialize
      */
-
     LGraphNode.prototype.serialize = function() {
         //create serialization object
         var o = {
@@ -2627,7 +2552,7 @@
         return o;
     };
 
-    /* Creates a clone of this node */
+    /* duplicates this node */
     LGraphNode.prototype.clone = function() {
         var node = LiteGraph.createNode(this.type);
         if (!node) {
@@ -2665,26 +2590,23 @@
     };
 
     /**
-     * serialize and stringify
+     * serialize and stringify Node
      * @method toString
      */
-
     LGraphNode.prototype.toString = function() {
         return JSON.stringify(this.serialize());
     };
-    //LGraphNode.prototype.deserialize = function(info) {} //this cannot be done from within, must be done in LiteGraph
 
     /**
-     * get the title string
+     * get the node title string
      * @method getTitle
      */
-
     LGraphNode.prototype.getTitle = function() {
         return this.title || this.constructor.title;
     };
 
     /**
-     * sets the value of a property
+     * sets the value of a Node property
      * @method setProperty
      * @param {String} name
      * @param {*} value
@@ -2715,9 +2637,9 @@
 			}
     };
 
-    // Execution *************************
+    /////////////////// Node IO ////////////////////////
     /**
-     * sets the output data
+     * sets the output data for a Node
      * @method setOutputData
      * @param {number} slot
      * @param {*} data
@@ -2726,10 +2648,6 @@
         if (!this.outputs) {
             return;
         }
-
-        //this maybe slow and a niche case
-        //if(slot && slot.constructor === String)
-        //	slot = this.findOutputSlot(slot);
 
         if (slot == -1 || slot >= this.outputs.length) {
             return;
@@ -3069,6 +2987,10 @@
         return r;
     };
 
+    /**
+    * Adds an 'onTrigger' input to the node if it does not exist.
+    * @returns {Number} The index of the 'onTrigger' input slot after the operation.
+    */
     LGraphNode.prototype.addOnTriggerInput = function(){
         var trigS = this.findInputSlot("onTrigger");
         if (trigS == -1){ //!trigS || 
@@ -3078,6 +3000,10 @@
         return trigS;
     }
     
+    /**
+    * Ensures the node has an 'onExecuted' output slot.
+    * @returns {Number} The index of the 'onExecuted' output slot.
+    */
     LGraphNode.prototype.addOnExecutedOutput = function(){
         var trigS = this.findOutputSlot("onExecuted");
         if (trigS == -1){ //!trigS || 
@@ -3087,22 +3013,28 @@
         return trigS;
     }
     
+    /**
+    * Triggers the 'onExecuted' output slot after node execution if it exists.
+    * @param {any} param - The parameter to pass to the trigger.
+    * @param {Object} options - Additional options for the trigger.
+    */
     LGraphNode.prototype.onAfterExecuteNode = function(param, options){
         var trigS = this.findOutputSlot("onExecuted");
         if (trigS != -1){
             
-            //console.debug(this.id+":"+this.order+" triggering slot onAfterExecute");
-            //console.debug(param);
-            //console.debug(options);
             this.triggerSlot(trigS, param, null, options);
-            
         }
     }    
     
+    /**
+    * Changes the operational mode of the node to the specified mode.
+    * Depending on the mode, it may add necessary inputs or outputs (e.g., 'onTrigger').
+    * @param {number} modeTo - The mode to switch the node to.
+    * @returns {boolean} True if mode change is successful, False for an unrecognized mode.
+    */
     LGraphNode.prototype.changeMode = function(modeTo){
         switch(modeTo){
             case LiteGraph.ON_EVENT:
-                // this.addOnExecutedOutput();
                 break;
                 
             case LiteGraph.ON_TRIGGER:
@@ -3950,7 +3882,7 @@
     };
 
     /**
-     * returns the first output slot free
+     * returns the first free output slot 
      * @method findOutputSlotFree
      * @param {object} options
      * @return {number_or_object} the slot (-1 if not found)
@@ -4713,6 +4645,7 @@
         return out;
     };
 
+    ////////////////////////////Main Canvas Handling ////////////////////////////////////
     /* Force align to grid */
     LGraphNode.prototype.alignToGrid = function() {
         this.pos[0] =
@@ -4752,6 +4685,11 @@
         ]);
     };
 
+    /**
+    * Loads an image and marks the node canvas as dirty when the image is ready.
+    * @param {string} url - The relative URL to the image.
+    * @returns {Image} The Image object being loaded.
+    */
     LGraphNode.prototype.loadImage = function(url) {
         var img = new Image();
         img.src = LiteGraph.node_images_path + url;
@@ -4764,45 +4702,6 @@
         };
         return img;
     };
-
-    //safe LGraphNode action execution (not sure if safe)
-    /*
-LGraphNode.prototype.executeAction = function(action)
-{
-	if(action == "") return false;
-
-	if( action.indexOf(";") != -1 || action.indexOf("}") != -1)
-	{
-		this.trace("Error: Action contains unsafe characters");
-		return false;
-	}
-
-	var tokens = action.split("(");
-	var func_name = tokens[0];
-	if( typeof(this[func_name]) != "function")
-	{
-		this.trace("Error: Action not found on node: " + func_name);
-		return false;
-	}
-
-	var code = action;
-
-	try
-	{
-		var _foo = eval;
-		eval = null;
-		(new Function("with(this) { " + code + "}")).call(this);
-		eval = _foo;
-	}
-	catch (err)
-	{
-		this.trace("Error executing action {" + action + "} :" + err);
-		return false;
-	}
-
-	return true;
-}
-*/
 
     /* Allows to get onMouseMove and onMouseUp events even if the mouse is out of focus */
     LGraphNode.prototype.captureInput = function(v) {
@@ -4855,6 +4754,13 @@ LGraphNode.prototype.executeAction = function(action)
         }
     };
 
+    /**
+    * Converts node-local coordinates to screen-space coordinates in the graph canvas.
+    * @param {number} x - The local x-coordinate relative to the node.
+    * @param {number} y - The local y-coordinate relative to the node.
+    * @param {GraphCanvas} graphcanvas - The graph canvas instance for context.
+    * @returns {Array} The screen-space coordinates as [x, y].
+    */
     LGraphNode.prototype.localToScreen = function(x, y, graphcanvas) {
         return [
             (x + this.pos[0]) * graphcanvas.scale + graphcanvas.offset[0],
@@ -4862,12 +4768,20 @@ LGraphNode.prototype.executeAction = function(action)
         ];
     };
 
+    ////////////////////////// Node Group Handling ////////////////////////
     function LGraphGroup(title) {
         this._ctor(title);
     }
 
     global.LGraphGroup = LiteGraph.LGraphGroup = LGraphGroup;
 
+    /**
+    * Constructor for LGraphGroup, initializing properties for a node group in the graph.
+    * Sets the title, default font size, color, and establishes the bounding area.
+    * Defines getters and setters for the group's position and size ensuring minimum dimensions.
+    * Maintains an internal array to keep track of nodes within the group.
+    * @param {string} title - The title of the group; defaults to "Group" if not provided.
+    */
     LGraphGroup.prototype._ctor = function(title) {
         this.title = title || "Group";
         this.font_size = 24;
@@ -4909,6 +4823,10 @@ LGraphNode.prototype.executeAction = function(action)
         });
     };
 
+    /**
+    * Configures the group's title, bounding area, color, and font size from the object's properties.
+    * @param {Object} o - The object containing the properties to set.
+    */
     LGraphGroup.prototype.configure = function(o) {
         this.title = o.title;
         this._bounding.set(o.bounding);
@@ -4916,6 +4834,11 @@ LGraphNode.prototype.executeAction = function(action)
         this.font_size = o.font_size;
     };
 
+    /**
+    * puts the group's properties into an array for JSON compatability
+    * Rounds the bounding coordinates to the nearest integer for serialization.
+    * @returns {Object} An object containing the group's title, bounding area, color, and font size.
+    */
     LGraphGroup.prototype.serialize = function() {
         var b = this._bounding;
         return {
@@ -4931,6 +4854,13 @@ LGraphNode.prototype.executeAction = function(action)
         };
     };
 
+    /**
+    * Moves the group and optionally its contained nodes by a specified delta.
+    * Updates the position of the group and all nodes within the group.
+    * @param {number} deltax - The amount to move the group along the x-axis.
+    * @param {number} deltay - The amount to move the group along the y-axis.
+    * @param {boolean} ignore_nodes - If true, the nodes inside the group won't be moved.
+    */
     LGraphGroup.prototype.move = function(deltax, deltay, ignore_nodes) {
         this._pos[0] += deltax;
         this._pos[1] += deltay;
@@ -4944,6 +4874,9 @@ LGraphNode.prototype.executeAction = function(action)
         }
     };
 
+    /**
+    * Recalculates which nodes are inside the group's bounding box.
+    */
     LGraphGroup.prototype.recomputeInsideNodes = function() {
         this._nodes.length = 0;
         var nodes = this.graph._nodes;
@@ -4959,12 +4892,19 @@ LGraphNode.prototype.executeAction = function(action)
         }
     };
 
+    // This allows LGraphGroup instances to utilize the same point containment and canvas dirtying logic as nodes.
     LGraphGroup.prototype.isPointInside = LGraphNode.prototype.isPointInside;
     LGraphGroup.prototype.setDirtyCanvas = LGraphNode.prototype.setDirtyCanvas;
 
-    //****************************************
+    /////////////////////// Drag and Scale ///////////////////////////
 
-    //Scale and Offset
+    /**
+    * Creates a DragAndScale handler for an HTML element
+    * Initializes the handler with default scale settings 
+    * and binds the necessary mouse and touch events if not skipped.
+    * @param {HTMLElement} element - The element to which the drag and scale functionality will be applied.
+    * @param {boolean} skip_events - If true, event binding is skipped.
+    */
     function DragAndScale(element, skip_events) {
         this.offset = new Float32Array([0, 0]);
         this.scale = 1;
@@ -4986,20 +4926,23 @@ LGraphNode.prototype.executeAction = function(action)
 
     LiteGraph.DragAndScale = DragAndScale;
 
+    /**
+    * Attaches mouse and wheel event listeners to the provided element for handling drag and scaling interactions.
+    * Mouse events include down, move, and up actions to track dragging, and wheel actions for scaling.
+    * @param {HTMLElement} element - The element to attach the drag and scale event listeners to.
+    */
     DragAndScale.prototype.bindEvents = function(element) {
         this.last_mouse = new Float32Array(2);
 
         this._binded_mouse_callback = this.onMouse.bind(this);
 
+        // Add event listeners for mouse events
 		LiteGraph.pointerListenerAdd(element,"down", this._binded_mouse_callback);
 		LiteGraph.pointerListenerAdd(element,"move", this._binded_mouse_callback);
 		LiteGraph.pointerListenerAdd(element,"up", this._binded_mouse_callback);
 
-        element.addEventListener(
-            "mousewheel",
-            this._binded_mouse_callback,
-            false
-        );
+        // Add event listeners for wheel events (middle button scroll)
+        element.addEventListener("mousewheel", this._binded_middle_mouse_callback, false);
         element.addEventListener("wheel", this._binded_mouse_callback, false);
     };
 
@@ -14281,6 +14224,9 @@ LGraphNode.prototype.executeAction = function(action)
     }
 })(this);
 
+//this code is checking if the current environment supports module exports (like Node.js does). 
+//If it does, it exports several objects and variables 
+//so they can be imported and used by other modules or scripts in that environment
 if (typeof exports != "undefined") {
     exports.LiteGraph = this.LiteGraph;
     exports.LGraph = this.LGraph;
