@@ -1,12 +1,11 @@
 
 (function(global) {
-        // *************************************************************
-    //   LiteGraph CLASS                                     *******
-    // *************************************************************
+    //_____________________ LiteGraph ________________________________________
+    // LiteGraph: The library this file builds
 
+    //#region LiteGraph
     /**
      * The Global Scope. It contains all the registered node classes.
-     *
      * @class LiteGraph
      * @constructor
      */
@@ -739,7 +738,7 @@
         }
     });
 
-
+    
     //LiteGraph.getTime method abstracts away the differences in time-keeping functions across environments, 
     //giving you a reliable and precise way to get the current time
     if (typeof performance != "undefined") {
@@ -756,14 +755,13 @@
             return new Date().getTime();
         };
     }
-    
+    //#endregion LiteGraph
 
-    /////////////////////////////// LGraph ///////////////////////////////////
-    
-    //*********************************************************************************
-    // LGraph CLASS
-    //*********************************************************************************
 
+    //_____________________ LGraph __________________________________________________
+    // LGraph: the container of a whole graph made of nodes
+
+    //#region LGraph
     /**
      * LGraph is the class that contain a full graph. We instantiate one and add nodes to it, and then we can run the execution loop.
 	 * supported callbacks:
@@ -2367,9 +2365,13 @@
     LGraph.prototype.onNodeTrace = function(node, msg, color) {
         //TODO
     };
+    //#endregion LGraph
 
 
-    ///////////////////////////// Node Link Management /////////////////////////////////
+    //_____________________ Link Management ____________________________________
+    // Store and modify node connections
+
+    //#region Node Link Management
     /**
      * Destroys a link
      * @method removeLink
@@ -2442,8 +2444,14 @@
 
     LiteGraph.LLink = LLink;
 
+    //#endregion Node Link Management
 
-    ///////////////// begin node management //////////////////////////
+
+    //_____________________ LGraphNode _________________________________________
+    // LGraphNode: the base class of a node (this library uses its own system of inheritance)
+
+    //#region Node Management
+
     /**
      * Base Class for all the node type classes
      * @class LGraphNode
@@ -4892,12 +4900,16 @@
         ];
     };
 
+    //#endregion Node Management
 
-    ////////////////////////// Node Group Handling ////////////////////////
+
+    //_____________________ Node Group Management ___________________________________
+    // Create and move Node Groups
+
+    //#region Node Group Management
     function LGraphGroup(title) {
         this._ctor(title);
     }
-
     global.LGraphGroup = LiteGraph.LGraphGroup = LGraphGroup;
 
     /**
@@ -5021,9 +5033,13 @@
     LGraphGroup.prototype.isPointInside = LGraphNode.prototype.isPointInside;
     LGraphGroup.prototype.setDirtyCanvas = LGraphNode.prototype.setDirtyCanvas;
 
+    //#endregion Node Group Management
 
-    /////////////////////// Drag and Scale ///////////////////////////
 
+    //_____________________ Drag and Scale __________________________________________
+    // methods for resizing and moving UI elements
+
+    //#region Drag and Scale
     /**
     * Creates a DragAndScale handler for an HTML element
     * Initializes the handler with default scale settings 
@@ -5292,12 +5308,14 @@
         this.offset[1] = 0;
     };
 
+    //#endregion Drag and Scale
 
-    ///////////////////// Canvas Handling ///////////////////////////
-    //*********************************************************************************
-    // LGraphCanvas: LGraph renderer CLASS
-    //*********************************************************************************
 
+    //_____________________ LGraphCanvas ____________________________________________
+    // LGraphCanvas is the class in charge of rendering/interaction 
+    // with nodes inside the browser
+
+    //#region LGraphCanvas
     /**
      * This class is in charge of rendering one graph inside a canvas. And provides all the interaction required.
      * Valid callbacks are: onNodeSelected, onNodeDeselected, onShowNodePanel, onNodeDblClicked
@@ -13765,9 +13783,12 @@
         }
     };
 
+    //#endregion LGraphCanvas
 
-    /////////////////////////////// API //////////////////////////////////
 
+    //_____________________ API _____________________________________________________
+
+    //#region API
     /**
      * Compares two objects for equality by checking if corresponding properties are equal.
      * @param {Object} a - The first object to compare.
@@ -13945,9 +13966,12 @@
     }
     LiteGraph.num2hex = num2hex;
 
+    //#endregion API
 
-    /////////////////////// GUI elements ///////////////////////////////
 
+    //_____________________ GUI elements ____________________________________________
+
+    //#region GUI elements
     //LiteGraph GUI elements used for canvas editing
 
     /**
@@ -14697,7 +14721,10 @@
 
 	LiteGraph.CurveEditor = CurveEditor;
 
-    //////////////////// End Curve Editor ////////////////////
+    //#endregion GUI elements
+
+
+    //_____________________ Other ____________________________________________________
 
     /**
      * Extracts parameter names from a function definition.
