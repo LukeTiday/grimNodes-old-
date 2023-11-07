@@ -756,7 +756,10 @@
             return new Date().getTime();
         };
     }
+    
 
+    /////////////////////////////// LGraph ///////////////////////////////////
+    
     //*********************************************************************************
     // LGraph CLASS
     //*********************************************************************************
@@ -790,7 +793,11 @@
     //default supported types
     LGraph.supported_types = ["number", "string", "boolean"];
 
-    //used to know which types of connections support this graph (some graphs do not allow certain types)
+    /**
+     * Gets the list of supported types within the graph.(some graphs do not allow certain types)
+     * @method getSupportedTypes
+     * @return {Array<string>} An array of supported types.
+     */
     LGraph.prototype.getSupportedTypes = function() {
         return this.supported_types || LGraph.supported_types;
     };
@@ -1090,7 +1097,10 @@
         }
     };
 
-    //This is more internal, it computes the executable nodes in order and returns it
+    /**
+     * This is more internal, it computes the executable nodes in order and returns it
+     * @method computeExecutionOrder
+     */
     LGraph.prototype.computeExecutionOrder = function(
         only_onExecute,
         set_level
@@ -1571,7 +1581,12 @@
         this.updateExecutionOrder();
     };
 
-    // Returns a node by its id.
+    /**
+     * Retrieves a node from the graph based on its ID.
+     * @method getNodeById
+     * @param {number|string} id - The ID of the node to retrieve.
+     * @return {LGraphNode} The node associated with the given ID, or null if not found.
+     */
     LGraph.prototype.getNodeById = function(id) {
         if (id == null) {
             return null;
@@ -1715,7 +1730,7 @@
         this.updateExecutionOrder();
     };
 
-    // ********** GLOBALS *****************
+    /////////////////// GLOBALS //////////////////////////////
 
     /**
     * Handles the given action by finding the first input node with a matching name and triggering its action.
@@ -1752,9 +1767,16 @@
         }
     };
 
+
     ////////////// INPUT HANDLING ///////////////
     
-    // Tell this graph it has a global graph input of this type
+    /**
+     * Adds an input to the graph with the specified name, type, and initial value.
+     * @method addInput
+     * @param {string} name - The name of the input to add.
+     * @param {string} type - The type of the input.
+     * @param {*} value - The initial value of the input.
+     */
     LGraph.prototype.addInput = function(name, type, value) {
         var input = this.inputs[name];
         if (input) {
@@ -1776,7 +1798,12 @@
         }
     };
 
-    // Assign a data to the global graph input
+    /**
+     * Sets the data for a global graph input.
+     * @method setInputData
+     * @param {string} name - The name of the input.
+     * @param {*} data - The data to be assigned to the input.
+     */
     LGraph.prototype.setInputData = function(name, data) {
         var input = this.inputs[name];
         if (!input) {
@@ -1785,7 +1812,12 @@
         input.value = data;
     };
 
-    // Returns the current value of a global graph input
+    /**
+     * Retrieves the data from a global graph input.
+     * @method getInputData
+     * @param {string} name - The name of the input.
+     * @returns {*} The data stored in the input, or null if the input does not exist.
+     */
     LGraph.prototype.getInputData = function(name) {
         var input = this.inputs[name];
         if (!input) {
@@ -1794,7 +1826,12 @@
         return input.value;
     };
 
-    // Changes the name of a global graph input
+    /**
+     * Renames an existing input to a new name.
+     * @method renameInput
+     * @param {string} old_name - The current name of the input.
+     * @param {string} name - The new name for the input.
+     */
     LGraph.prototype.renameInput = function(old_name, name) {
         if (name == old_name) {
             return;
@@ -1822,7 +1859,12 @@
         }
     };
 
-    // Changes the type of a global graph input
+    /**
+     * Changes the type of an existing input.
+     * @method changeInputType
+     * @param {string} name - The name of the input to change.
+     * @param {string} type - The new type for the input.
+     */
     LGraph.prototype.changeInputType = function(name, type) {
         if (!this.inputs[name]) {
             return false;
@@ -1843,7 +1885,12 @@
         }
     };
 
-    // Removes a global graph input
+    /**
+     * Removes an existing input from the graph.
+     * @method removeInput
+     * @param {string} name - The name of the input to remove.
+     * @returns {boolean} True if the input was successfully removed, false otherwise.
+     */
     LGraph.prototype.removeInput = function(name) {
         if (!this.inputs[name]) {
             return false;
@@ -1862,9 +1909,16 @@
         return true;
     };
 
+
     ////////////// OUTPUT HANDLING ///////////////
 
-    // Creates a global graph output
+    /**
+     * Creates a global graph output
+     * @method addOutput
+     * @param {string} name - The name of the output to add.
+     * @param {string} type - The data type of the output.
+     * @param {any} value - The initial value for the output.
+     */
     LGraph.prototype.addOutput = function(name, type, value) {
         this.outputs[name] = { name: name, type: type, value: value };
         this._version++;
@@ -1878,7 +1932,12 @@
         }
     };
 
-    // Assign a data to the global output
+    /**
+     * Sets the data for a named output.
+     * @method setOutputData
+     * @param {string} name - The name of the output.
+     * @param {any} value - The data to set for the output.
+     */
     LGraph.prototype.setOutputData = function(name, value) {
         var output = this.outputs[name];
         if (!output) {
@@ -1887,7 +1946,11 @@
         output.value = value;
     };
 
-    // Returns the current value of a global graph output
+    /**
+     * Retrieves the current data from a named output.
+     * @method getOutputData
+     * @param {string} name - The name of the output.
+     */
     LGraph.prototype.getOutputData = function(name) {
         var output = this.outputs[name];
         if (!output) {
@@ -1896,7 +1959,12 @@
         return output.value;
     };
 
-    // Renames a global graph output
+    /**
+     * Renames an existing output in the graph.
+     * @method renameOutput
+     * @param {string} old_name - The current name of the output.
+     * @param {string} name - The new name for the output.
+     */
     LGraph.prototype.renameOutput = function(old_name, name) {
         if (!this.outputs[old_name]) {
             return false;
@@ -1920,7 +1988,12 @@
         }
     };
 
-    //Changes the type of a global graph output
+    /**
+     * Changes the type of an existing output in the graph.
+     * @method changeOutputType
+     * @param {string} name - The name of the output to change.
+     * @param {string} type - The new type to assign to the output.
+     */
     LGraph.prototype.changeOutputType = function(name, type) {
         if (!this.outputs[name]) {
             return false;
@@ -1941,7 +2014,12 @@
         }
     };
 
-    // Removes a global graph output
+    /**
+     * Removes an output from the graph by name.
+     * @method removeOutput
+     * @param {string} name - The name of the output to remove.
+     * @return {boolean} True if the output was successfully removed, false otherwise.
+     */
     LGraph.prototype.removeOutput = function(name) {
         if (!this.outputs[name]) {
             return false;
@@ -1958,9 +2036,16 @@
         }
         return true;
     };
+
+
     ////////////// Triggers ///////////////
 
-    //Triggers an event on all nodes with a specific title
+    /**
+     * Triggers the input on all nodes with the specified title within the graph.
+     * @method triggerInput
+     * @param {string} name - The title of the nodes to be triggered.
+     * @param {*} value - The value to trigger the nodes with.
+     */
     LGraph.prototype.triggerInput = function(name, value) {
         var nodes = this.findNodesByTitle(name);
         for (var i = 0; i < nodes.length; ++i) {
@@ -1968,7 +2053,12 @@
         }
     };
 
-    //Assigns a callback function to all nodes with a given title
+    /**
+     * Assigns a callback function to all nodes with the specified title within the graph.
+     * @method setCallback
+     * @param {string} name - The title of the nodes to search for.
+     * @param {function} func - The callback function to set for the nodes.
+     */
     LGraph.prototype.setCallback = function(name, func) {
         var nodes = this.findNodesByTitle(name);
         for (var i = 0; i < nodes.length; ++i) {
@@ -1976,7 +2066,12 @@
         }
     };
 
-	//used for undo, called before any change is made to the graph
+
+    /**
+     * used for undo, called before any change is made to the graph
+     * @method beforeChange
+     * @param {Object} [info] - Optional information about the upcoming changes.
+     */
     LGraph.prototype.beforeChange = function(info) {
         if (this.onBeforeChange) {
             this.onBeforeChange(this,info);
@@ -1984,7 +2079,11 @@
         this.sendActionToCanvas("onBeforeChange", this);
     };
 
-	//used to resend actions, called after any change is made to the graph
+    /**
+     * used to resend actions, called after any change is made to the graph
+     * @method afterChange
+     * @param {Object} [info] - Optional information detailing the nature of the changes.
+     */
     LGraph.prototype.afterChange = function(info) {
         if (this.onAfterChange) {
             this.onAfterChange(this,info);
@@ -1992,7 +2091,12 @@
         this.sendActionToCanvas("onAfterChange", this);
     };
 
-    //Handles updates to the graph when a connection change occurs
+    /**
+     * Handles updates to the graph when a connection change occurs
+     * @method connectionChange
+     * @param {LGraphNode} node - The node for which the connection has changed.
+     * @param {Object} [link_info] - Information about the connection that has changed.
+     */
     LGraph.prototype.connectionChange = function(node, link_info) {
         this.updateExecutionOrder();
         if (this.onConnectionChange) {
@@ -2002,7 +2106,11 @@
         this.sendActionToCanvas("onConnectionChange");
     };
 
-    // returns if the graph is in live mode
+    /**
+     * Checks if the graph is in 'live' mode within any of its associated canvases.
+     * @method isLive
+     * @return {Boolean} True if the graph is live on any associated canvas, false otherwise.
+     */
     LGraph.prototype.isLive = function() {
         if (!this.list_of_graphcanvas) {
             return false;
@@ -2017,7 +2125,10 @@
         return false;
     };
 
-    // clears the triggered slot animation in all links (stop visual animation)
+    /**
+     * Clears the 'triggered' status from all links in the graph.
+     * @method clearTriggeredSlots
+     */
     LGraph.prototype.clearTriggeredSlots = function() {
         for (var i in this.links) {
             var link_info = this.links[i];
@@ -2030,7 +2141,10 @@
         }
     };
 
-    // Called when something visually changed (not the graph!)
+    /**
+     * dirties the graph after a change
+     * @method change
+     */
     LGraph.prototype.change = function() {
         if (LiteGraph.debug) {
             console.log("Graph changed");
@@ -2041,10 +2155,16 @@
         }
     };
 
-    // Dirty means needs to be regenerated
+    /**
+     * Marks the canvas as 'dirty', prompting a redraw.
+     * @method setDirtyCanvas
+     * @param {boolean} fg - If true, indicates the foreground needs to be redrawn.
+     * @param {boolean} bg - If true, indicates the background needs to be redrawn.
+     */
     LGraph.prototype.setDirtyCanvas = function(fg, bg) {
         this.sendActionToCanvas("setDirty", [fg, bg]);
     };
+
 
     ///////////////save and recover app state /////////////////////
     /**
@@ -2248,6 +2368,7 @@
         //TODO
     };
 
+
     ///////////////////////////// Node Link Management /////////////////////////////////
     /**
      * Destroys a link
@@ -2320,6 +2441,7 @@
     };
 
     LiteGraph.LLink = LLink;
+
 
     ///////////////// begin node management //////////////////////////
     /**
@@ -2636,6 +2758,7 @@
 				}
 			}
     };
+
 
     /////////////////// Node IO ////////////////////////
     /**
@@ -4645,6 +4768,7 @@
         return out;
     };
 
+
     ////////////////////////////Main Canvas Handling ////////////////////////////////////
     /* Force align to grid */
     LGraphNode.prototype.alignToGrid = function() {
@@ -4767,6 +4891,7 @@
             (y + this.pos[1]) * graphcanvas.scale + graphcanvas.offset[1]
         ];
     };
+
 
     ////////////////////////// Node Group Handling ////////////////////////
     function LGraphGroup(title) {
@@ -4896,6 +5021,7 @@
     LGraphGroup.prototype.isPointInside = LGraphNode.prototype.isPointInside;
     LGraphGroup.prototype.setDirtyCanvas = LGraphNode.prototype.setDirtyCanvas;
 
+
     /////////////////////// Drag and Scale ///////////////////////////
 
     /**
@@ -4946,6 +5072,11 @@
         element.addEventListener("wheel", this._binded_mouse_callback, false);
     };
 
+    /**
+    * Calculates and updates the area currently visible to the user within the element, accounting for scaling and offset.
+    * If a viewport is provided, it calculates the visible area based on that viewport's dimensions and position.
+    * @param {Float32Array} viewport - An optional array defining the viewport's x, y, width, and height.
+    */
     DragAndScale.prototype.computeVisibleArea = function( viewport ) {
         if (!this.element) {
             this.visible_area[0] = this.visible_area[1] = this.visible_area[2] = this.visible_area[3] = 0;
@@ -4970,6 +5101,10 @@
         this.visible_area[3] = endy - starty;
     };
 
+    /**
+    * Handles mouse interactions for dragging and scaling an element. 
+    * @param {MouseEvent} e - The mouse event that is to be processed.
+    */
     DragAndScale.prototype.onMouse = function(e) {
         if (!this.enabled) {
             return;
@@ -5043,11 +5178,20 @@
 		}
     };
 
+    /**
+    * Applies the current scale and offset transformations of the DragAndScale instance to the canvas
+    * @param {CanvasRenderingContext2D} ctx - The canvas rendering context to which the transformations will be applied.
+    */
     DragAndScale.prototype.toCanvasContext = function(ctx) {
         ctx.scale(this.scale, this.scale);
         ctx.translate(this.offset[0], this.offset[1]);
     };
 
+    /**
+    * Converts a position from the offset coordinates to canvas coordinates (Luke: maybe for multiwindow?)
+    * @param {Array} pos - The [x, y] position array in offset coordinates to be converted.
+    * @returns {Array} The converted [x, y] position array in canvas coordinates.
+    */
     DragAndScale.prototype.convertOffsetToCanvas = function(pos) {
         //return [pos[0] / this.scale - this.offset[0], pos[1] / this.scale - this.offset[1]];
         return [
@@ -5056,6 +5200,12 @@
         ];
     };
 
+    /**
+    * Converts a position from canvas coordinates to the offset coordinates used by the DragAndScale instance
+    * @param {Array} pos - The [x, y] position array in canvas coordinates to be converted.
+    * @param {Array} [out] - Optional array to store the output to avoid creating a new array.
+    * @returns {Array} The converted [x, y] position array in offset coordinates.
+    */
     DragAndScale.prototype.convertCanvasToOffset = function(pos, out) {
         out = out || [0, 0];
         out[0] = pos[0] / this.scale - this.offset[0];
@@ -5063,6 +5213,11 @@
         return out;
     };
 
+    /**
+    * Handles the mouse drag action by updating the offset values of the DragAndScale instance.
+    * @param {number} x - The amount of horizontal movement of the mouse.
+    * @param {number} y - The amount of vertical movement of the mouse.
+    */
     DragAndScale.prototype.mouseDrag = function(x, y) {
         this.offset[0] += x / this.scale;
         this.offset[1] += y / this.scale;
@@ -5072,6 +5227,11 @@
         }
     };
 
+    /**
+    * Changes the scale of the DragAndScale instance, zooming in or out of the canvas.
+    * @param {number} value - The new scale value to be set.
+    * @param {Array<number>} zooming_center - The canvas position to remain fixed during scaling.
+    */
     DragAndScale.prototype.changeScale = function(value, zooming_center) {
         if (value < this.min_scale) {
             value = this.min_scale;
@@ -5116,16 +5276,24 @@
         }
     };
 
+    /**
+    * Modifies the scale of the DragAndScale instance based on a multiplier (value).
+    * @param {number} value - The factor by which to multiply the current scale.
+    * @param {Array<number>} zooming_center - The canvas position to remain fixed during scaling.
+    */
     DragAndScale.prototype.changeDeltaScale = function(value, zooming_center) {
         this.changeScale(this.scale * value, zooming_center);
     };
 
+    // Resets scale to 1 and offset to [0,0].
     DragAndScale.prototype.reset = function() {
         this.scale = 1;
         this.offset[0] = 0;
         this.offset[1] = 0;
     };
 
+
+    ///////////////////// Canvas Handling ///////////////////////////
     //*********************************************************************************
     // LGraphCanvas: LGraph renderer CLASS
     //*********************************************************************************
@@ -5143,8 +5311,6 @@
     function LGraphCanvas(canvas, graph, options) {
         this.options = options = options || {};
 
-        //if(graph === undefined)
-        //	throw ("No graph assigned");
         this.background_image = LGraphCanvas.DEFAULT_BACKGROUND_IMAGE;
 
         if (canvas && canvas.constructor === String) {
@@ -5264,8 +5430,10 @@
 
     global.LGraphCanvas = LiteGraph.LGraphCanvas = LGraphCanvas;
 
+    // Set default Base64-encoded background image for LGraphCanvas
 	LGraphCanvas.DEFAULT_BACKGROUND_IMAGE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAQBJREFUeNrs1rEKwjAUhlETUkj3vP9rdmr1Ysammk2w5wdxuLgcMHyptfawuZX4pJSWZTnfnu/lnIe/jNNxHHGNn//HNbbv+4dr6V+11uF527arU7+u63qfa/bnmh8sWLBgwYJlqRf8MEptXPBXJXa37BSl3ixYsGDBMliwFLyCV/DeLIMFCxYsWLBMwSt4Be/NggXLYMGCBUvBK3iNruC9WbBgwYJlsGApeAWv4L1ZBgsWLFiwYJmCV/AK3psFC5bBggULloJX8BpdwXuzYMGCBctgwVLwCl7Be7MMFixYsGDBsu8FH1FaSmExVfAxBa/gvVmwYMGCZbBg/W4vAQYA5tRF9QYlv/QAAAAASUVORK5CYII=";
 
+    // Define color coding for different link types in LGraphCanvas
     LGraphCanvas.link_type_colors = {
         "-1": LiteGraph.EVENT_LINK_COLOR,
         number: "#AAA",
@@ -5275,7 +5443,6 @@
 
     /**
      * clears all the data inside
-     *
      * @method clear
      */
     LGraphCanvas.prototype.clear = function() {
@@ -5321,7 +5488,6 @@
 
     /**
      * assigns a graph, you can reassign graphs to the same canvas
-     *
      * @method setGraph
      * @param {LGraph} graph
      */
@@ -5350,7 +5516,6 @@
 
     /**
      * returns the top level graph (in case there are subgraphs open on the canvas)
-     *
      * @method getTopGraph
      * @return {LGraph} graph
      */
@@ -5363,7 +5528,6 @@
 
     /**
      * opens a graph contained inside a node in the current graph
-     *
      * @method openSubgraph
      * @param {LGraph} graph
      */
@@ -5392,7 +5556,6 @@
 
     /**
      * closes a subgraph contained inside a node
-     *
      * @method closeSubgraph
      * @param {LGraph} assigns a graph
      */
@@ -5501,11 +5664,13 @@
     };
 
     //used in some events to capture them
+    // Prevent default event handling and return false
     LGraphCanvas.prototype._doNothing = function doNothing(e) {
     	//console.log("pointerevents: _doNothing "+e.type);
         e.preventDefault();
         return false;
     };
+    // Prevent default event handling and return true
     LGraphCanvas.prototype._doReturnTrue = function doNothing(e) {
         e.preventDefault();
         return true;
@@ -5520,8 +5685,6 @@
             console.warn("LGraphCanvas: events already binded");
             return;
         }
-
-        //console.log("pointerevents: bindEvents");
         
         var canvas = this.canvas;
 
@@ -5549,15 +5712,6 @@
             this._mousewheel_callback,
             false
         );
-
-        //touch events -- THIS WAY DOES NOT WORK, finish implementing pointerevents, than clean the touchevents
-        /*if( 'touchstart' in document.documentElement )
-        {
-            canvas.addEventListener("touchstart", this._touch_callback, true);
-            canvas.addEventListener("touchmove", this._touch_callback, true);
-            canvas.addEventListener("touchend", this._touch_callback, true);
-            canvas.addEventListener("touchcancel", this._touch_callback, true);
-        }*/
 
         //Keyboard ******************
         this._key_callback = this.processKey.bind(this);
@@ -5622,6 +5776,7 @@
         this._events_binded = false;
     };
 
+    // Extracts and returns the file extension from a URL
     LGraphCanvas.getFileExtension = function(url) {
         var question = url.indexOf("?");
         if (question != -1) {
@@ -5636,7 +5791,8 @@
 
     /**
      * this function allows to render the canvas using WebGL instead of Canvas2D
-     * this is useful if you plant to render 3D objects inside your nodes, it uses litegl.js for webgl and canvas2DtoWebGL to emulate the Canvas2D calls in webGL
+     * this is useful if you plan to render 3D objects inside your nodes, 
+     * it uses litegl.js for webgl and canvas2DtoWebGL to emulate the Canvas2D calls in webGL
      * @method enableWebGL
      **/
     LGraphCanvas.prototype.enableWebGL = function() {
@@ -5723,16 +5879,10 @@
      */
     LGraphCanvas.prototype.stopRendering = function() {
         this.is_rendering = false;
-        /*
-	if(this.rendering_timer_id)
-	{
-		clearInterval(this.rendering_timer_id);
-		this.rendering_timer_id = null;
-	}
-	*/
     };
 
-    /* LiteGraphCanvas input */
+
+    /////////////////// LiteGraphCanvas input //////////////////////////
 
 	//used to block future mouse events (because of im gui)
 	LGraphCanvas.prototype.blockClick = function()
@@ -5740,7 +5890,11 @@
 		this.block_click = true;
 		this.last_mouseclick = 0;
 	}
-	
+
+	/**
+    * Handles mouse down events on the graph canvas element.
+    * @param e - The MouseEvent object associated with the mouse down event.
+    */
     LGraphCanvas.prototype.processMouseDown = function(e) {
     	
 		if( this.set_canvas_dirty_on_mouse_event )
@@ -6861,7 +7015,7 @@
     };
 
     /**
-     * returns the INDEX if a position (in graph space) is on top of a node input slot
+     * returns the INDEX of a position (in graph space) is on top of a node input slot
      * @method isOverNodeInput
      **/
     LGraphCanvas.prototype.isOverNodeInput = function(
@@ -6907,7 +7061,7 @@
     };
     
     /**
-     * returns the INDEX if a position (in graph space) is on top of a node output slot
+     * returns the INDEX of a position (in graph space) is on top of a node output slot
      * @method isOverNodeOuput
      **/
     LGraphCanvas.prototype.isOverNodeOutput = function(
@@ -6953,7 +7107,7 @@
     };
 
     /**
-     * process a key event
+     * process a key event **SET HOTKEYS HERE**
      * @method processKey
      **/
     LGraphCanvas.prototype.processKey = function(e) {
@@ -7047,6 +7201,7 @@
         }
     };
 
+    //copy
     LGraphCanvas.prototype.copyToClipboard = function() {
         var clipboard_info = {
             nodes: [],
@@ -7103,7 +7258,7 @@
             JSON.stringify(clipboard_info)
         );
     };
-
+    //paste
     LGraphCanvas.prototype.pasteFromClipboard = function(isConnectUnselected = false) {
         // if ctrl + shift + v is off, return when isConnectUnselected is true (shift is pressed) to maintain old behavior
         if (!LiteGraph.ctrl_shift_v_paste_connect_unselected_outputs && isConnectUnselected) {
@@ -7278,6 +7433,7 @@
         }
     };
 
+    // Handles double-click on node: Shows panel if available, invokes callback, and marks canvas as dirty
     LGraphCanvas.prototype.processNodeDblClicked = function(n) {
         if (this.onShowNodePanel) {
             this.onShowNodePanel(n);
@@ -7294,6 +7450,9 @@
         this.setDirty(true);
     };
 
+
+    /////////// Node Selection Handling //////////////////
+    // Selects a node and handles multi-selection if shift, ctrl, or multi-select is active; triggers node selection callback.
     LGraphCanvas.prototype.processNodeSelected = function(node, e) {
         this.selectNode(node, e && (e.shiftKey || e.ctrlKey || this.multi_select));
         if (this.onNodeSelected) {
@@ -7466,7 +7625,7 @@
     };
     
     /**
-     * centers the camera on a given node
+     * centers the camera frame on a given node
      * @method centerOnNode
      **/
     LGraphCanvas.prototype.centerOnNode = function(node) {
@@ -7516,25 +7675,6 @@
      **/
     LGraphCanvas.prototype.setZoom = function(value, zooming_center) {
         this.ds.changeScale(value, zooming_center);
-        /*
-	if(!zooming_center && this.canvas)
-		zooming_center = [this.canvas.width * 0.5,this.canvas.height * 0.5];
-
-	var center = this.convertOffsetToCanvas( zooming_center );
-
-	this.ds.scale = value;
-
-	if(this.scale > this.max_zoom)
-		this.scale = this.max_zoom;
-	else if(this.scale < this.min_zoom)
-		this.scale = this.min_zoom;
-
-	var new_center = this.convertOffsetToCanvas( zooming_center );
-	var delta_offset = [new_center[0] - center[0], new_center[1] - center[1]];
-
-	this.offset[0] += delta_offset[0];
-	this.offset[1] += delta_offset[1];
-	*/
 
         this.dirty_canvas = true;
         this.dirty_bgcanvas = true;
@@ -7593,7 +7733,8 @@
         this.graph._nodes.unshift(node);
     };
 
-    /* Interaction */
+
+    ///////////////////// Interaction ////////////////////////
 
     /* LGraphCanvas render */
     var temp = new Float32Array(4);
@@ -7942,6 +8083,13 @@
         this.drawSubgraphPanelRight(subgraph, subnode, ctx)
     }
 
+    /**
+     * Draws the left-side panel within the subgraph editor
+     * @method drawSubgraphPanelLeft
+     * @param {LGraph} subgraph - The graph that contains the subnode.
+     * @param {LGraphNode} subnode - The node representing the subgraph.
+     * @param {CanvasRenderingContext2D} ctx - The canvas rendering context used for drawing.
+     */
     LGraphCanvas.prototype.drawSubgraphPanelLeft = function (subgraph, subnode, ctx) {
         var num = subnode.inputs ? subnode.inputs.length : 0;
         var w = 200;
@@ -8010,6 +8158,13 @@
             this.showSubgraphPropertiesDialog(subnode);
         }
     }
+    /**
+     * Renders the right-side panel within the subgraph editor
+     * @method drawSubgraphPanelRight
+     * @param {LGraph} subgraph - The graph which includes the subnode.
+     * @param {LGraphNode} subnode - The node representing the subgraph within the main graph.
+     * @param {CanvasRenderingContext2D} ctx - The 2D context of the canvas on which the panel is drawn.
+     */
     LGraphCanvas.prototype.drawSubgraphPanelRight = function (subgraph, subnode, ctx) {
         var num = subnode.outputs ? subnode.outputs.length : 0;
         var canvas_w = this.bgcanvas.width
@@ -8080,6 +8235,7 @@
             this.showSubgraphPropertiesDialogRight(subnode);
         }
     }
+
 	//Draws a button into the canvas overlay and computes if it was clicked using the immediate gui paradigm
 	LGraphCanvas.prototype.drawButton = function( x,y,w,h, text, bgcolor, hovercolor, textcolor )
 	{
@@ -8122,6 +8278,16 @@
 		return was_clicked;
 	}
 
+    /**
+     * Checks if a given area on the canvas has been clicked by the user.
+     * @method isAreaClicked
+     * @param {number} x - The X coordinate of the top-left corner of the area.
+     * @param {number} y - The Y coordinate of the top-left corner of the area.
+     * @param {number} w - The width of the area.
+     * @param {number} h - The height of the area.
+     * @param {boolean} hold_click - If true, the click will be blocked after this check.
+     * @returns {boolean} - True if the area was clicked without the click being blocked, otherwise false.
+     */
 	LGraphCanvas.prototype.isAreaClicked = function( x,y,w,h, hold_click )
 	{
 		var pos = this.mouse;
@@ -8346,12 +8512,11 @@
         this.dirty_canvas = true; //to force to repaint the front canvas with the bgcanvas
     };
 
-    var temp_vec2 = new Float32Array(2);
-
     /**
      * draws the given node inside the canvas
      * @method drawNode
      **/
+    var temp_vec2 = new Float32Array(2);
     LGraphCanvas.prototype.drawNode = function(node, ctx) {
         var glow = false;
         this.current_node = node;
@@ -8783,6 +8948,7 @@
     };
 
 	//used by this.over_link_center
+    // Renders a tooltip near a link, displaying additional data about the link if available.
 	LGraphCanvas.prototype.drawLinkTooltip = function( ctx, link )
 	{
 		var pos = link._pos;
@@ -8842,7 +9008,6 @@
      * @method drawNodeShape
      **/
     var tmp_area = new Float32Array(4);
-
     LGraphCanvas.prototype.drawNodeShape = function(
         node,
         ctx,
@@ -10280,8 +10445,10 @@
         event.preventDefault();
     };*/
 
-    /* CONTEXT MENU ********************/
 
+    ///////////////////////// CONTEXT MENU ////////////////////////////
+
+    // Handles adding a new node group to the graph
     LGraphCanvas.onGroupAdd = function(info, entry, mouse_event) {
         var canvas = LGraphCanvas.active_canvas;
         var ref_window = canvas.getCanvasWindow();
@@ -10328,7 +10495,7 @@
         };
     }
     /**
-     * Determines the furthest nodes in each direction for the currently selected nodes
+     * Determines the furthest nodes in each direction for the currently selected nodes (for frame selected)
      * @return {{left: LGraphNode, top: LGraphNode, right: LGraphNode, bottom: LGraphNode}}
      */
     LGraphCanvas.prototype.boundaryNodesForSelection = function() {
@@ -10336,7 +10503,7 @@
     }
 
     /**
-     *
+     * Aligns nodes in some directions
      * @param {LGraphNode[]} nodes a list of nodes
      * @param {"top"|"bottom"|"left"|"right"} direction Direction to align the nodes
      * @param {LGraphNode?} align_to Node to align to (if null, align to the furthest node in the given direction)
@@ -10380,6 +10547,15 @@
         canvas.dirty_bgcanvas = true;
     };
 
+    /**
+     * Creates a context menu for node alignment with an inner callback to align selected nodes.
+     * @method onNodeAlign
+     * @param {String} value - The alignment type (Top, Bottom, Left, Right).
+     * @param {Object} options - Additional options.
+     * @param {Event} event - The original event triggering the context menu.
+     * @param {ContextMenu} prev_menu - The previous context menu, if any.
+     * @param {LGraphNode} node - The reference node for alignment.
+     */
     LGraphCanvas.onNodeAlign = function(value, options, event, prev_menu, node) {
         new LiteGraph.ContextMenu(["Top", "Bottom", "Left", "Right"], {
             event: event,
@@ -10392,6 +10568,14 @@
         }
     }
 
+    /**
+     * Triggers the creation of a context menu for aligning nodes within a group and provides an inner callback for the alignment action.
+     * @method onGroupAlign
+     * @param {String} value - The alignment option chosen ("Top", "Bottom", "Left", "Right").
+     * @param {Object} options - Additional options for the context menu.
+     * @param {Event} event - The event that triggered the context menu.
+     * @param {ContextMenu} prev_menu - The previous context menu, if any, to enable cascading menus.
+     */
     LGraphCanvas.onGroupAlign = function(value, options, event, prev_menu) {
         new LiteGraph.ContextMenu(["Top", "Bottom", "Left", "Right"], {
             event: event,
@@ -10404,6 +10588,14 @@
         }
     }
 
+    /**
+ * Generates a context menu for adding nodes within a graphical node editor interface.
+ * @param node - The node object where the menu is being requested.
+ * @param options - Options or configurations for the context menu.
+ * @param e - The original event object that triggered the context menu.
+ * @param prev_menu - The previous menu, allows for nested menus or returning to the previous state.
+ * @param callback - A callback function to execute after a node creation.
+ */
     LGraphCanvas.onMenuAdd = function (node, options, e, prev_menu, callback) {
 
         var canvas = LGraphCanvas.active_canvas;
@@ -10568,6 +10760,14 @@
         return false;
     };
 
+    /**
+     * Creates and displays a context menu for adding optional inputs to a node in the node-graph editor.
+     * @param v - An arbitrary value provided by the caller, its usage isn't shown in this snippet.
+     * @param options - Potentially an object with configuration options, not directly used as it's reassigned.
+     * @param e - The MouseEvent that triggered the context menu.
+     * @param prev_menu - Reference to any previous menu, used for creating nested menus.
+     * @param node - The graph node for which to show optional inputs.
+     */
     LGraphCanvas.showMenuNodeOptionalOutputs = function(
         v,
         options,
@@ -10695,6 +10895,14 @@
         return false;
     };
 
+    /**
+     * Displays a context menu for a node's properties in the graph editor.
+     * @param value - The current value for the node's property (unused in this snippet).
+     * @param options - Configuration options for the menu (unused in this snippet).
+     * @param e - The MouseEvent object when the menu is triggered.
+     * @param prev_menu - The previous context menu, if any, for creating sub-menus.
+     * @param node - The node whose properties will be displayed and potentially edited.
+     */
     LGraphCanvas.onShowMenuNodeProperties = function(
         value,
         options,
@@ -10761,12 +10969,27 @@
         return false;
     };
 
+    /**
+     * Decodes HTML entities in a string by leveraging the browser's innerText functionality.
+     * @method decodeHTML
+     * @param {String} str - The string containing HTML entities to decode.
+     * @returns {String} The decoded string.
+     */
     LGraphCanvas.decodeHTML = function(str) {
         var e = document.createElement("div");
         e.innerText = str;
         return e.innerHTML;
     };
 
+    /**
+     * Triggers the resize of a node (or multiple selected nodes) to their computed size based on the node's content.
+     * @method onMenuResizeNode
+     * @param {*} value - Not used in this function, can be any type.
+     * @param {Object} options - Not used in this function, an object with additional options.
+     * @param {Event} e - The event that triggered this function.
+     * @param {Object} menu - The context menu reference.
+     * @param {LGraphNode} node - The node to be resized. If null, the function will return without action.
+     */
     LGraphCanvas.onMenuResizeNode = function(value, options, e, menu, node) {
         if (!node) {
             return;
@@ -10790,6 +11013,12 @@
         node.setDirtyCanvas(true, true);
     };
 
+    /**
+    * Displays a context menu for a graph link, providing options for adding a new node connected to the link or deleting the link.
+    * @method showLinkMenu
+    * @param {LLink} link - The graph link for which the context menu is being displayed.
+    * @param {Event} e - The event that triggered the menu.
+    */
     LGraphCanvas.prototype.showLinkMenu = function(link, e) {
         var that = this;
 		// console.log(link);
@@ -10843,6 +11072,11 @@
         return false;
     };
     
+    /**
+    * Automatically adds and connects a node based on slot type information.
+    * @param {Object} optPass - Parameters for node creation and connection.
+    * @returns {Boolean} - Success status of node addition.
+    */
  	LGraphCanvas.prototype.createDefaultNodeForSlot = function(optPass) { // addNodeMenu for connection
         var optPass = optPass || {};
         var opts = Object.assign({   nodeFrom: null // input
@@ -10994,6 +11228,10 @@
 		return false;
 	}
  
+    /**
+    * Displays a context menu for creating or searching for a node to connect based on the selected slot's type.
+    * @param {Object} optPass - Options and information about the slot connection.
+    */
     LGraphCanvas.prototype.showConnectionMenu = function(optPass) { // addNodeMenu for connection
         var optPass = optPass || {};
         var opts = Object.assign({   nodeFrom: null  // input
@@ -11104,6 +11342,14 @@
     };
 
     // TODO refactor :: this is used fot title but not for properties!
+    /**
+    * Handles the display and interaction of the property editor dialog for a node.
+    * @param {Object} item - The property item to be edited.
+    * @param {Object} options - Additional options for the editor.
+    * @param {Event} e - The event triggering the editor display.
+    * @param {HTMLElement} menu - The menu element associated with the property.
+    * @param {LGraphNode} node - The node whose property is being edited.
+    */
     LGraphCanvas.onShowPropertyEditor = function(item, options, e, menu, node) {
         var input_html = "";
         var property = item.property || "title";
@@ -11199,6 +11445,15 @@
     };
 
     // refactor: there are different dialogs, some uses createDialog some dont
+    /**
+     * Creates and displays a prompt dialog over the graph canvas, allowing the user to input text or values.
+     * @param {string} title - The title of the prompt dialog.
+     * @param {string} value - The default value or placeholder text to display in the input field.
+     * @param {function} callback - The callback function to be called with the input value when confirmed.
+     * @param {Event} event - The browser event that triggered the prompt.
+     * @param {boolean} multiline - Determines if the input should be a textarea (multiline) or a single line text input.
+     * @returns {HTMLElement} The dialog element created.
+     */
     LGraphCanvas.prototype.prompt = function(title, value, callback, event, multiline) {
         var that = this;
         var input_html = "";
@@ -11320,6 +11575,11 @@
     };
 
     LGraphCanvas.search_limit = -1;
+    /**
+     * Displays a search box over the graph canvas to allow the user to search for nodes or commands.
+     * @param {Event} event - The browser event that triggered the search box.
+     * @param {Object} options - An object containing customizable options for the search box behavior.
+     */
     LGraphCanvas.prototype.showSearchBox = function(event, options) {
         // proposed defaults
         var def_options = { slot_from: null
@@ -11885,6 +12145,14 @@
         return dialog;
     };
 
+    /**
+     * Shows a dialog to edit the value of a specified property on a node within the graph canvas.
+     * It dynamically creates the input field appropriate to the type of the property being edited.
+     * The function also handles the update and storage of the property value as well as calling any relevant callbacks.
+     * @param {LGraphNode} node - The node whose property is being edited.
+     * @param {string} property - The name of the property to edit.
+     * @param {Object} options - Additional options for the dialog behavior (e.g., callbacks on close).
+     */
     LGraphCanvas.prototype.showEditPropertyValue = function( node, property, options ) {
         if (!node || node.properties[property] === undefined) {
             return;
@@ -12018,7 +12286,17 @@
 		return dialog;
     };
 
-    // TODO refactor, theer are different dialog, some uses createDialog, some dont
+    // TODO refactor, there are different dialog, some uses createDialog, some dont
+    /**
+     * Creates and displays a custom dialog with HTML content over the canvas. The dialog can be
+     * positioned automatically based on various options like mouse event coordinates or manual position.
+     * It has features to close on certain conditions like mouse leave or keypress and can check for
+     * user interaction within input fields.
+     * @param {string} html - The HTML content to be placed inside the dialog.
+     * @param {Object} options - Configuration options for the dialog's behavior and appearance.
+     *                          Includes 'checkForInput', 'closeOnLeave', and positioning options.
+     * @returns {HTMLDivElement} The dialog element that has been created and added to the DOM.
+     */
     LGraphCanvas.prototype.createDialog = function(html, options) {
         var def_options = { checkForInput: false, closeOnLeave: true, closeOnLeave_checkModified: true };
         options = Object.assign(def_options, options || {});
@@ -12116,6 +12394,17 @@
         return dialog;
     };
 
+
+    //////////////////////////// Panels //////////////////////////////
+    /**
+     * Creates and returns a new panel element with customizable options. The panel is
+     * composed of a header with a title, a content area, an alternative content area, and a footer.
+     * It supports adding buttons, HTML content, and various widgets.
+     * @param {string} title - The text title that will appear in the panel header.
+     * @param {Object} options - Configuration options for the panel including dimensions, window reference,
+     *                           and whether the panel is closable, among others.
+     * @returns {HTMLDivElement} The fully constructed panel element with functionality for adding content and widgets.
+     */
 	LGraphCanvas.prototype.createPanel = function(title, options) {
 		options = options || {};
 
@@ -12316,6 +12605,15 @@
 		return root;
 	};
 
+    /**
+     * Converts a property value to a string suitable for display, 
+     * @param {*} value - The value to be converted into a printable string.
+     * @param {Array|Object} values - An optional array or object to use for translating the value to a string.
+     *        If it's an array, it simply returns the string representation of the value.
+     *        If it's an object, it searches for the value as a key and appends the key (descriptor) to the string.
+     * @returns {string} The value converted to a string, with additional descriptor if provided and applicable.
+     */
+
 	LGraphCanvas.getPropertyPrintableValue = function(value, values)
 	{
 		if(!values)
@@ -12340,6 +12638,11 @@
 		}
 	}
 
+    /**
+     * Closes all the panels related to the graph canvas. It targets panels with the IDs "node-panel" and 
+     * "option-panel". This is a cleanup utility to ensure that these UI components are properly removed 
+     * when they are no longer needed or when the user decides to close them.
+     */
     LGraphCanvas.prototype.closePanels = function(){
         var panel = document.querySelector("#node-panel");
 		if(panel)
@@ -12349,6 +12652,13 @@
 			panel.close();
     }
     
+    /**
+     * Displays the Graph Options Panel for the LGraphCanvas instance
+     * @param {Object} refOpts - An object containing reference options (unused but implied by structure).
+     * @param {Object} obEv - Object containing the event, used to extract the canvas if called from an event.
+     * @param {LiteGraph.ContextMenu} refMenu - Reference to the context menu (unused but implied by structure).
+     * @param {LiteGraph.ContextMenu} refMenu2 - Secondary reference to the context menu (unused but implied by structure).
+     */
     LGraphCanvas.prototype.showShowGraphOptionsPanel = function(refOpts, obEv, refMenu, refMenu2){
         if(this.constructor && this.constructor.name == "HTMLDivElement"){
             // assume coming from the menu event click
@@ -12436,6 +12746,12 @@
 		graphcanvas.canvas.parentNode.appendChild( panel );
     }
     
+    /**
+     * Opens a panel for editing properties of a selected node within the LGraphCanvas.
+     * The panel includes widgets for editing properties like title, mode, and color, as well as custom properties defined in the node.
+     * It also provides a delete button for node removal and a code editor for properties that require code input.
+     * @param {LGraphNode} node - The graph node for which the panel is opened, allowing property editing.
+     */
     LGraphCanvas.prototype.showShowNodePanel = function( node )
 	{
 		this.SELECTED_NODE = node;
@@ -12588,6 +12904,12 @@
 		this.canvas.parentNode.appendChild( panel );
 	}
 	
+    /**
+     * This function creates a dialog panel that allows users to manage the inputs of a subgraph node within the graph editor.
+     * It lists existing subgraph inputs, providing an option to delete them, and includes a form to add new inputs.
+     * @param {LGraphNode} node - The subgraph node whose inputs are being managed in this dialog.
+     * @return {DOMElement} The newly created panel element that is appended to the canvas's parent node.
+     */
 	LGraphCanvas.prototype.showSubgraphPropertiesDialog = function(node)
 	{
 		console.log("showing subgraph properties dialog");
@@ -12643,6 +12965,13 @@
 	    this.canvas.parentNode.appendChild(panel);
 		return panel;
 	}
+
+    /**
+     * Opens a dialog for managing the outputs of a subgraph node within the graph editor. 
+     * It lists existing subgraph outputs, providing an option to delete them, and includes a form to add new outputs.
+     * @param {LGraphNode} node - The subgraph node being edited.
+     * @return {DOMElement} The panel element created and appended to the parent node of the canvas.
+     */
     LGraphCanvas.prototype.showSubgraphPropertiesDialogRight = function (node) {
 
         // console.log("showing subgraph properties dialog");
@@ -12704,6 +13033,11 @@
         this.canvas.parentNode.appendChild(panel);
         return panel;
     }
+
+    /**
+     * Validates all dialog panels associated with the graph editor.
+     * If a panel's associated node is not found in the current graph, it closes the panel.
+     */
 	LGraphCanvas.prototype.checkPanels = function()
 	{
 		if(!this.canvas)
@@ -12719,6 +13053,17 @@
 		}
 	}
 
+
+/////////////////////////////// On Menu ///////////////////////////////
+    /**
+     * Handles the node collapse action from the context menu within the graph editor.
+     * This method collapses the selected node or multiple nodes if more than one is selected.
+     * @param {*} value - The value parameter, if applicable, is not used in this context.
+     * @param {Object} options - The options provided to the context menu.
+     * @param {Event} e - The event object associated with the context menu action.
+     * @param {HTMLElement} menu - The context menu element.
+     * @param {LGraphNode} node - The graph node to collapse or the first node if multiple are selected.
+     */
     LGraphCanvas.onMenuNodeCollapse = function(value, options, e, menu, node) {
 		node.graph.beforeChange(/*?*/);
 		
@@ -12738,10 +13083,22 @@
 		node.graph.afterChange(/*?*/);
     };
 
+    //pins a node
     LGraphCanvas.onMenuNodePin = function(value, options, e, menu, node) {
         node.pin();
     };
 
+    /**
+     * Handles the context menu option for changing the mode of a node within the graph.
+     * It creates a new context menu with options based on `LiteGraph.NODE_MODES`.
+     *
+     * @param {string} value - The selected value from the context menu (unused in this function).
+     * @param {Object} options - An object containing additional data and configurations.
+     * @param {Event} e - The original event that triggered the context menu.
+     * @param {HTMLElement} menu - The DOM element of the parent context menu.
+     * @param {LGraphNode} node - The graph node for which the mode change is applicable.
+     * @returns {boolean} Returns `false` to prevent default browser context menu.
+     */
     LGraphCanvas.onMenuNodeMode = function(value, options, e, menu, node) {
         new LiteGraph.ContextMenu(
             LiteGraph.NODE_MODES,
@@ -12775,6 +13132,17 @@
         return false;
     };
 
+    /**
+     * Presents a color selection context menu for a node and applies the chosen color theme.
+     * Throws an exception if no node is provided
+     * 
+     * @param {string} value - The selected value from the context menu (unused in this function).
+     * @param {Object} options - An object containing additional data and configurations.
+     * @param {Event} e - The original event that triggered the context menu.
+     * @param {HTMLElement} menu - The DOM element of the parent context menu.
+     * @param {LGraphNode} node - The graph node to which the color theme will be applied.
+     * @returns {boolean} Returns `false` to prevent default browser context menu.
+     */
     LGraphCanvas.onMenuNodeColors = function(value, options, e, menu, node) {
         if (!node) {
             throw "no node for color";
@@ -12844,6 +13212,17 @@
         return false;
     };
 
+    /**
+     * Displays a context menu to select a shape for a node and applies the selected shape.
+     * Throws an error if no node is provided to the function.
+     * @param {string} value - The selected value from the context menu (unused in this function).
+     * @param {Object} options - An object containing additional data and configurations.
+     * @param {Event} e - The event that triggered the context menu.
+     * @param {HTMLElement} menu - The DOM element of the parent context menu.
+     * @param {LGraphNode} node - The graph node for which the shape will be set.
+     * @returns {boolean} Always returns `false` to prevent the default browser context menu from showing.
+     */
+
     LGraphCanvas.onMenuNodeShapes = function(value, options, e, menu, node) {
         if (!node) {
             throw "no node passed";
@@ -12882,6 +13261,14 @@
         return false;
     };
 
+    /**
+     * Handles the removal of a node or multiple selected nodes from the graph.
+     * @param {string} value - The selected value from the context menu (unused in this function).
+     * @param {Object} options - An object containing additional data and configurations.
+     * @param {Event} e - The event that triggered the context menu.
+     * @param {HTMLElement} menu - The DOM element of the parent context menu.
+     * @param {LGraphNode} node - The node to be removed.
+     */
     LGraphCanvas.onMenuNodeRemove = function(value, options, e, menu, node) {
         if (!node) {
             throw "no node passed";
@@ -12911,6 +13298,15 @@
         node.setDirtyCanvas(true, true);
     };
 
+    /**
+     * Converts a single node or a selection of nodes into a subgraph node.
+     * A new subgraph node is created and placed in the same position as the original node.
+     * @param {string} value - The selected value from the context menu (unused in this function).
+     * @param {Object} options - An object containing additional data and configurations.
+     * @param {Event} e - The event that triggered the context menu.
+     * @param {HTMLElement} menu - The DOM element of the parent context menu.
+     * @param {LGraphNode} node - The initial node for subgraph creation or the right-clicked node.
+     */
     LGraphCanvas.onMenuNodeToSubgraph = function(value, options, e, menu, node) {
 		var graph = node.graph;
 		var graphcanvas = LGraphCanvas.active_canvas;
@@ -12931,6 +13327,14 @@
         node.setDirtyCanvas(true, true);
     };
 
+    /**
+     * Clones the right-clicked node or a selection of nodes. Each cloned node is positioned slightly offset from the original
+     * @param {string} value - The selected value from the context menu (unused in this function).
+     * @param {Object} options - An object containing additional data and configurations.
+     * @param {Event} e - The event that triggered the context menu.
+     * @param {HTMLElement} menu - The DOM element of the parent context menu.
+     * @param {LGraphNode} node - The node to be cloned or the initially right-clicked node.
+     */
     LGraphCanvas.onMenuNodeClone = function(value, options, e, menu, node) {
         
 		node.graph.beforeChange();
@@ -12968,6 +13372,10 @@
         node.setDirtyCanvas(true, true);
     };
 
+    /**
+     * Defines a collection of color themes for nodes within the LGraphCanvas. Each color theme includes
+     * a color for the node itself, a background color, and a group color for when nodes are grouped together.
+     */
     LGraphCanvas.node_colors = {
         red: { color: "#322", bgcolor: "#533", groupcolor: "#A88" },
         brown: { color: "#332922", bgcolor: "#593930", groupcolor: "#b06634" },
@@ -12984,6 +13392,20 @@
         black: { color: "#222", bgcolor: "#000", groupcolor: "#444" }
     };
 
+    /**
+      * Retrieves the context menu options for the canvas. 
+     *
+     * The default options include:
+     * - "Add Node": Submenu for adding a new node.
+     * - "Add Group": Option to add a new group.
+     * - "Align": (Conditionally shown) Submenu for aligning nodes if more than one node is selected.
+     * - "Close subgraph": (Conditionally shown) Option to close the current subgraph if any are open.
+     *
+     * If the `getMenuOptions` function is defined, it will be used to get the initial options list.
+     * If the `getExtraMenuOptions` function is provided, it can append or modify the list after the
+     * default options have been established.
+     * @returns {Array} - The final array of context menu options.
+     */
     LGraphCanvas.prototype.getCanvasMenuOptions = function() {
         var options = null;
 		var that = this;
@@ -13031,6 +13453,11 @@
     };
 
     //called by processContextMenu to extract the menu list
+    /**
+     * Constructs the context menu for a given node within the graph canvas.
+     * @param {LGraphNode} node - The node for which to generate the menu.
+     * @returns {Array} - An array of menu options relevant to the node.
+     */
     LGraphCanvas.prototype.getNodeMenuOptions = function(node) {
         var options = null;
 
@@ -13147,6 +13574,11 @@
         return options;
     };
 
+    /**
+     * Generates the context menu options for a node group on the graph canvas.
+     * @param {LGraphNode} node - The group node for which to construct the menu.
+     * @returns {Array} - A list of menu options specific to node groups.
+     */
     LGraphCanvas.prototype.getGroupMenuOptions = function(node) {
         var o = [
             { content: "Title", callback: LGraphCanvas.onShowPropertyEditor },
@@ -13168,6 +13600,11 @@
         return o;
     };
 
+    /**
+     * Handles the context menu processing for nodes, slots, and the canvas.
+     * @param {LGraphNode} node - The node on which the right-click event occurred.
+     * @param {Event} event - The right-click mouse event information.
+     */
     LGraphCanvas.prototype.processContextMenu = function(node, event) {
         var that = this;
         var canvas = LGraphCanvas.active_canvas;
@@ -13328,7 +13765,15 @@
         }
     };
 
-    //API *************************************************
+
+    /////////////////////////////// API //////////////////////////////////
+
+    /**
+     * Compares two objects for equality by checking if corresponding properties are equal.
+     * @param {Object} a - The first object to compare.
+     * @param {Object} b - The second object to compare.
+     * @returns {boolean} - Returns true if all properties in `a` have the same value in `b`, otherwise false.
+     */
     function compareObjects(a, b) {
         for (var i in a) {
             if (a[i] != b[i]) {
@@ -13339,6 +13784,12 @@
     }
     LiteGraph.compareObjects = compareObjects;
 
+    /**
+     * Calculates distance between two points in a 2D space
+     * @param {number[]} a - The [x, y] coordinates of the first point.
+     * @param {number[]} b - The [x, y] coordinates of the second point.
+     * @returns {number} - The distance between points `a` and `b`.
+     */
     function distance(a, b) {
         return Math.sqrt(
             (b[0] - a[0]) * (b[0] - a[0]) + (b[1] - a[1]) * (b[1] - a[1])
@@ -13346,6 +13797,13 @@
     }
     LiteGraph.distance = distance;
 
+    /**
+     * Converts a color array into a CSS rgba color string.
+     * @param {number[]} c - An array representing the color, 
+     * where the first three values correspond to the RGB components 
+     * (normalized between 0 and 1), and the optional fourth value is the alpha.
+     * @returns {string} - The CSS rgba color string.
+     */
     function colorToString(c) {
         return (
             "rgba(" +
@@ -13361,6 +13819,16 @@
     }
     LiteGraph.colorToString = colorToString;
 
+    /**
+     * Determines if a point (x,y) lies within a given rectangle.
+     * @param {number} x - The x-coordinate of the point.
+     * @param {number} y - The y-coordinate of the point.
+     * @param {number} left - The x-coordinate of the rectangle's left side.
+     * @param {number} top - The y-coordinate of the rectangle's top side.
+     * @param {number} width - The width of the rectangle.
+     * @param {number} height - The height of the rectangle.
+     * @returns {boolean} - True if the point is inside the rectangle, false otherwise.
+     */
     function isInsideRectangle(x, y, left, top, width, height) {
         if (left < x && left + width > x && top < y && top + height > y) {
             return true;
@@ -13370,6 +13838,12 @@
     LiteGraph.isInsideRectangle = isInsideRectangle;
 
     //[minx,miny,maxx,maxy]
+    /**
+     * Expands the bounding box to include a given point.
+     * @param {Array<number>} bounding - Array representing the bounding box [left, top, right, bottom].
+     * @param {number} x - The x-coordinate of the point.
+     * @param {number} y - The y-coordinate of the point.
+     */
     function growBounding(bounding, x, y) {
         if (x < bounding[0]) {
             bounding[0] = x;
@@ -13385,7 +13859,12 @@
     }
     LiteGraph.growBounding = growBounding;
 
-    //point inside bounding box
+    /**
+     * Determines if a point is within the provided bounding box.
+     * @param {Array<number>} p - The point as [x, y] to test.
+     * @param {Array<Array<number>>} bb - The bounding box as [[left, top], [right, bottom]].
+     * @returns {boolean} - True if the point is inside the bounding box, false otherwise.
+     */
     function isInsideBounding(p, bb) {
         if (
             p[0] < bb[0][0] ||
@@ -13399,7 +13878,12 @@
     }
     LiteGraph.isInsideBounding = isInsideBounding;
 
-    //bounding overlap, format: [ startx, starty, width, height ]
+    /**
+     * Checks if two bounding boxes overlap.
+     * @param {Array<number>} a - The first bounding box as [ startx, starty, width, height ].
+     * @param {Array<number>} b - The second bounding box as [ startx, starty, width, height ].
+     * @returns {boolean} - True if bounding boxes overlap, false otherwise.
+     */
     function overlapBounding(a, b) {
         var A_end_x = a[0] + a[2];
         var A_end_y = a[1] + a[3];
@@ -13418,9 +13902,11 @@
     }
     LiteGraph.overlapBounding = overlapBounding;
 
-    //Convert a hex value to its decimal value - the inputted hex must be in the
-    //	format of a hex triplet - the kind we use for HTML colours. The function
-    //	will return an array with three values.
+    /**
+     * Converts a hexadecimal color string to an array of RGB numerical values.
+     * @param {string} hex - Hexadecimal color string (#RRGGBB).
+     * @returns {Array<number>} - The RGB representation as an array of numbers.
+     */
     function hex2num(hex) {
         if (hex.charAt(0) == "#") {
             hex = hex.slice(1);
@@ -13438,11 +13924,13 @@
         }
         return value;
     }
-
     LiteGraph.hex2num = hex2num;
 
-    //Give a array with three values as the argument and the function will return
-    //	the corresponding hex triplet.
+    /**
+     * Converts an RGB triplet into a hexadecimal color string.
+     * @param {Array<number>} triplet - An array of RGB values (0-255).
+     * @returns {string} - The hexadecimal color string (#RRGGBB).
+     */
     function num2hex(triplet) {
         var hex_alphabets = "0123456789ABCDEF";
         var hex = "#";
@@ -13455,14 +13943,17 @@
         }
         return hex;
     }
-
     LiteGraph.num2hex = num2hex;
 
-    /* LiteGraph GUI elements used for canvas editing *************************************/
+
+    /////////////////////// GUI elements ///////////////////////////////
+
+    //LiteGraph GUI elements used for canvas editing
 
     /**
      * ContextMenu from LiteGUI
-     *
+     * Creates a context menu with the given options.
+     * 
      * @class ContextMenu
      * @constructor
      * @param {Array} values (allows object { title: "Nice text", callback: function ... })
@@ -13658,6 +14149,13 @@
         }
     }
 
+    /**
+     * Adds an item to the context menu with given name and value.
+     * @param {string} name - The display name of the menu item.
+     * @param {function|object|null} value - The value associated with the menu item which can be a callback function, an object representing submenu options, or null for a separator.
+     * @param {object} options - Additional options for the menu item's behavior and appearance.
+     * @returns {HTMLElement} The created menu item element.
+     */
     ContextMenu.prototype.addItem = function(name, value, options) {
         var that = this;
         options = options || {};
@@ -13784,6 +14282,12 @@
         return element;
     };
 
+    /**
+     * Closes the context menu and removes its DOM element from the document.
+     * If this menu has a parent menu, it also manages the state of the parent to reflect the closure.
+     * @param {Event} e - The event that triggered the close, used to check whether the cursor is still over the parent menu.
+     * @param {boolean} ignore_parent_menu - If true, the parent menu's state will not be altered.
+     */
     ContextMenu.prototype.close = function(e, ignore_parent_menu) {
         if (this.root.parentNode) {
             this.root.parentNode.removeChild(this.root);
@@ -13813,6 +14317,14 @@
     };
 
     //this code is used to trigger events easily (used in the context menu mouseleave
+    
+    /**
+     * Triggers a custom event on the given DOM element.
+     * @param {HTMLElement} element - The DOM element on which to dispatch the event.
+     * @param {string} event_name - The name of the event to trigger.
+     * @param {Object} params - Additional parameters to pass with the event.
+     * @param {HTMLElement} origin - The element where the event originated, included for reference in the event.
+     */
     ContextMenu.trigger = function(element, event_name, params, origin) {
         var evt = document.createEvent("CustomEvent");
         evt.initCustomEvent(event_name, true, true, params); //canBubble, cancelable, detail
@@ -13826,7 +14338,11 @@
         return evt;
     };
 
-    //returns the top most menu
+
+    /**
+     * returns the top most menu
+     * @return {ContextMenu} The topmost ContextMenu instance in the chain.
+     */
     ContextMenu.prototype.getTopMenu = function() {
         if (this.options.parentMenu) {
             return this.options.parentMenu.getTopMenu();
@@ -13834,6 +14350,10 @@
         return this;
     };
 
+    /**
+     * Retrieves the first event that triggered the creation of the context menu chain.
+     * @return {Event} The first event in the context menu chain.
+     */
     ContextMenu.prototype.getFirstEvent = function() {
         if (this.options.parentMenu) {
             return this.options.parentMenu.getFirstEvent();
@@ -13841,6 +14361,12 @@
         return this.options.event;
     };
 
+    /**
+     * Determines if the cursor is currently positioned over a given DOM element.
+     * @param {Event} event - The event object that contains the cursor's position.
+     * @param {Element} element - The DOM element to check against the cursor's position.
+     * @return {boolean} True if the cursor is over the element, false otherwise.
+     */
     ContextMenu.isCursorOverElement = function(event, element) {
         var left = event.clientX;
         var top = event.clientY;
@@ -13861,6 +14387,11 @@
 
     LiteGraph.ContextMenu = ContextMenu;
 
+    /**
+     * Closes all context menus that are currently open within a specified window context.
+     * @param {Window} ref_window - The window reference in which to close all context menus.
+     *                               Defaults to the current window if not provided.
+     */
     LiteGraph.closeAllContextMenus = function(ref_window) {
         ref_window = ref_window || window;
 
@@ -13883,6 +14414,11 @@
         }
     };
 
+    /**
+     * Extends a target class with properties and methods from an origin class without overriding existing ones.
+     * @param {Function} target - The target class to be extended.
+     * @param {Function} origin - The origin class whose properties and methods will be copied to the target.
+     */
     LiteGraph.extendClass = function(target, origin) {
         for (var i in origin) {
             //copy class properties
@@ -13926,7 +14462,16 @@
         }
     };
 
+
+    /////////////////////////////////// Curve Editor ////////////////////////////////////////
+
 	//used by some widgets to render a curve editor
+    /**
+     * Represents an editor for manipulating curves through a set of control points.
+     * The CurveEditor allows for the visual editing of curve shapes by providing functionalities
+     * to select, move, and manipulate points that define the curve's geometry.
+     * @param {Array} points - An array of points that define the curve's control points.
+     */
 	function CurveEditor( points )
 	{
 		this.points = points;
@@ -13937,6 +14482,16 @@
 		this.margin = 5;
 	}
 
+    /**
+     * Samples a value from a piecewise linear curve defined by an array of points at a given position 'f'.
+     * This function calculates the interpolated value at the given position 'f' by finding the segment
+     * of the curve that contains 'f' and performing linear interpolation between the segment's endpoints.
+     *
+     * @param {number} f - The position on the curve to sample, typically within the range of 0.0 to 1.0.
+     * @param {Array} points - An array of points defining the curve. Each point is an array [x, y],
+     *                         where 'x' is the normalized position and 'y' is the value at that position.
+     * @returns {number} The interpolated value at position 'f' or 0 if 'f' is outside the range of the points.
+     */
 	CurveEditor.sampleCurve = function(f,points)
 	{
 		if(!points)
@@ -13956,6 +14511,17 @@
 		return 0;
 	}
 
+    /**
+     * Draws the curve editor interface within a given context and bounding size.
+     * The curve is defined by the 'points' property of the CurveEditor object.
+     *
+     * @param {CanvasRenderingContext2D} ctx - The canvas rendering context where the curve editor will be drawn.
+     * @param {Array} size - The size of the canvas [width, height].
+     * @param {Object} graphcanvas - The canvas where the graph is being rendered (unused in this function, but could be used for more complex operations).
+     * @param {string} background_color - The color used for the curve editor background (if provided).
+     * @param {string} line_color - The color of the curve line.
+     * @param {boolean} inactive - If true, the curve editor is drawn with reduced opacity, indicating it is not active.
+     */
 	CurveEditor.prototype.draw = function( ctx, size, graphcanvas, background_color, line_color, inactive )
 	{
 		var points = this.points;
@@ -14002,6 +14568,13 @@
 		ctx.restore();
 	}
 
+    /**
+     * Handles mouse down events on the curve editor, selecting points or creating new ones.
+     *
+     * @param {Array} localpos - The local position [x, y] where the mouse down event occurred.
+     * @param {Object} graphcanvas - The canvas where the graph is being rendered, used here to adjust point selection sensitivity based on the canvas scale.
+     * @returns {boolean} - Returns true if a point is selected or created, otherwise undefined.
+     */
 	//localpos is mouse in curve editor space
 	CurveEditor.prototype.onMouseDown = function( localpos, graphcanvas )
 	{
@@ -14033,6 +14606,12 @@
 			return true;
 	}
 
+    /**
+     * Handles mouse move events on the curve editor, allowing for point selection and movement within the editor bounds.
+     *
+     * @param {Array} localpos - The local position [x, y] where the mouse move event occurred.
+     * @param {Object} graphcanvas - The canvas where the graph is being rendered, used to adjust the interaction sensitivity based on the canvas scale.
+     */
 	CurveEditor.prototype.onMouseMove = function( localpos, graphcanvas )
 	{
 		var points = this.points;
@@ -14067,12 +14646,26 @@
 		}
 	}
 
+    /**
+     * Handles mouse up events on the curve editor by deselecting any currently selected point.
+     *
+     * @param {Array} localpos - The local position [x, y] where the mouse up event occurred (unused in this function).
+     * @param {Object} graphcanvas - The canvas where the graph is being rendered (unused in this function).
+     * @returns {boolean} - Always returns false to indicate that no drag operation is continuing after mouse up.
+     */
 	CurveEditor.prototype.onMouseUp = function( localpos, graphcanvas )
 	{
 		this.selected = -1;
 		return false;
 	}
 
+    /**
+     * Finds the closest point on the curve to a given position within a specified maximum distance.
+     *
+     * @param {Array} pos - The position [x, y] to check against the points on the curve.
+     * @param {number} max_dist - The maximum distance within which to consider points as being close to the specified position.
+     * @returns {number} - The index of the closest point, or -1 if no point is close enough.
+     */
 	CurveEditor.prototype.getCloserPoint = function(pos, max_dist)
 	{
 		var points = this.points;
@@ -14104,7 +14697,14 @@
 
 	LiteGraph.CurveEditor = CurveEditor;
 
-    //used to create nodes from wrapping functions
+    //////////////////// End Curve Editor ////////////////////
+
+    /**
+     * Extracts parameter names from a function definition.
+     * used to create nodes from wrapping functions
+     * @param {Function} func - The function from which to extract parameter names.
+     * @returns {Array} An array of strings representing the names of the parameters of the provided function.
+     */
     LiteGraph.getParameterNames = function(func) {
         return (func + "")
             .replace(/[/][/].*$/gm, "") // strip single-line comments
@@ -14183,6 +14783,16 @@
 				return oDOM.addEventListener(sEvent, fCall, capture);
 		}
 	}
+
+    /**
+     * Adds pointer event listeners to a DOM element with support for different types of devices and fallbacks.
+     * This function is designed to abstract the complexities of handling various input event types across devices.
+     * Under Construction
+     * @param {HTMLElement} oDOM - The DOM element to which the event listener will be added.
+     * @param {string} sEvIn - The input event type (e.g., 'down', 'move') to listen for.
+     * @param {Function} fCall - The callback function that will be triggered when the event occurs.
+     * @param {boolean} [capture=false] - Specifies whether the event should be captured during the capturing phase (true) or bubbling phase (false).
+     */
 	LiteGraph.pointerListenerRemove = function(oDOM, sEvent, fCall, capture=false) {
 		if (!oDOM || !oDOM.removeEventListener || !sEvent || typeof fCall!=="function"){
 			//console.log("cant pointerListenerRemove "+oDOM+", "+sEvent+", "+fCall);
@@ -14209,6 +14819,13 @@
 		}
 	}
 
+    /**
+     * Clamps a value to ensure it falls within a specified range.
+     * @param {number} v - The value to clamp.
+     * @param {number} a - The lower bound of the range.
+     * @param {number} b - The upper bound of the range.
+     * @returns {number} - The clamped value.
+     */
     function clamp(v, a, b) {
         return a > v ? a : b < v ? b : v;
     };
@@ -14237,4 +14854,3 @@ if (typeof exports != "undefined") {
     exports.LGraphCanvas = this.LGraphCanvas;
     exports.ContextMenu = this.ContextMenu;
 }
-
